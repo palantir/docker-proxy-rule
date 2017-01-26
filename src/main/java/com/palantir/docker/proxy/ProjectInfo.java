@@ -9,6 +9,7 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
@@ -25,12 +26,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class ProjectInfo implements Supplier<ProjectInfoMappings> {
+    private static final String DOCKER_PS_FORMAT = "{{ .ID }},{{ .Names }},{{.Label \"com.docker.compose.service\"}}";
+    private static final String DOCKER_PS_FORMAT_1_13_0 = "{{ .ID }},{{ .Names }}";
+
     private final DockerExecutable docker;
     private final ProjectName projectName;
 
@@ -59,15 +64,19 @@ public class ProjectInfo implements Supplier<ProjectInfoMappings> {
 
     private ListMultimap<String, String> getContainerIdToAllIds() {
         try {
+            // If the docker version is 1.13.0, then .Label doesn't work.
+            // See https://github.com/docker/docker/pull/30291
+            String dockerVersion = getDockerVersion();
             Process ps = docker.execute(
                     "ps",
                     "--filter", "label=com.docker.compose.project=" + projectName.asString(),
-                    "--format", "{{ .ID }},{{ .Names }},{{.Label \"com.docker.compose.service\"}}");
+                    "--format", dockerVersion.equals("1.13.0") ? DOCKER_PS_FORMAT_1_13_0 : DOCKER_PS_FORMAT);
             Preconditions.checkState(ps.waitFor(10, TimeUnit.SECONDS), "'docker ps' timed out after 10 seconds");
 
             List<String> lines = getLinesFromInputStream(ps.getInputStream());
             List<List<String>> allIds = lines.stream()
                     .map(line -> Splitter.on(',').splitToList(line))
+                    .map(ids -> dockerVersion.equals("1.13.0") ? deriveServiceNameFromAllIds(ids) : ids)
                     .collect(Collectors.toList());
             ListMultimap<String, String> containerIdToAllIds = ArrayListMultimap.create();
             allIds.forEach(ids -> containerIdToAllIds.putAll(Iterables.getFirst(ids, null), ids));
@@ -75,6 +84,21 @@ public class ProjectInfo implements Supplier<ProjectInfoMappings> {
         } catch (IOException | InterruptedException e) {
             throw Throwables.propagate(e);
         }
+    }
+
+    private List<String> deriveServiceNameFromAllIds(List<String> ids) {
+        Optional<String> serviceName = getServiceNameFromAllIds(ids);
+        return ImmutableList.<String>builder()
+                .addAll(ids)
+                .addAll(serviceName.map(ImmutableList::of).orElse(ImmutableList.of()))
+                .build();
+    }
+
+    private Optional<String> getServiceNameFromAllIds(List<String> ids) {
+        return ids.stream()
+                .filter(id -> id.startsWith(projectName.asString() + "_"))
+                .findAny()
+                .map(id -> Splitter.on('_').splitToList(id).get(1));
     }
 
     private Map<String, String> getContainerIdToContainerIp(Multimap<String, String> containerIdToAllIds) {
@@ -126,5 +150,13 @@ public class ProjectInfo implements Supplier<ProjectInfoMappings> {
         List<U> duplicates = new ArrayList<>(multimap.values());
         ImmutableSet.copyOf(multimap.values()).forEach(duplicates::remove);
         return ImmutableSet.copyOf(duplicates);
+    }
+
+    private String getDockerVersion() throws IOException, InterruptedException {
+        Process process = docker.execute("version", "--format", "{{ .Client.Version }}");
+        if (!process.waitFor(5, TimeUnit.SECONDS) || process.exitValue() != 0) {
+            throw new IllegalStateException("Couldn't get docker version");
+        }
+        return getOnlyLineFromInputStream(process.getInputStream());
     }
 }
