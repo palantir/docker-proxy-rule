@@ -1,0 +1,23 @@
+machine:
+  pre:
+    - ./scripts/circle-ci/install-docker.sh:
+        pwd: $CIRCLE_PROJECT_REPONAME
+    - sudo wget --retry-connrefused --waitretry=1 --read-timeout 20 --timeout 15 -t 10 -q -O /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/1.9.0/docker-compose-`uname -s`-`uname -m`
+    - sudo chmod +x /usr/local/bin/docker-compose
+  java:
+    version:
+      oraclejdk8
+  environment:
+    TERM: dumb
+  services:
+    - docker
+
+dependencies:
+  pre:
+    - ./scripts/circle-ci/download-moreutils.sh
+  override:
+    - ./scripts/time-cmd.sh ./gradlew --stacktrace --profile --parallel resolveConfigurations
+
+test:
+  override:
+    - ./scripts/time-cmd.sh ./gradlew --stacktrace --profile --parallel --continue check
