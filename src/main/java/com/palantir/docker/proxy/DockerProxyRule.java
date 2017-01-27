@@ -35,6 +35,7 @@ public class DockerProxyRule extends ExternalResource {
                 .waitingForService("proxy", Container::areAllPortsOpen)
                 .saveLogsTo(LogDirectory.circleAwareLogDirectory(logDirectory))
                 .shutdownStrategy(ShutdownStrategy.AGGRESSIVE_WITH_NETWORK_CLEANUP)
+                .retryAttempts(0)
                 .build();
         this.projectName = projectName;
     }
