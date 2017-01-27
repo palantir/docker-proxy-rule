@@ -19,7 +19,7 @@ import java.net.Proxy;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.Optional;
 import org.junit.Test;
 
 public class DockerProxySelectorTest {
@@ -33,13 +33,14 @@ public class DockerProxySelectorTest {
     private static final URI TEST_IP_URI = createUriUnsafe("http://172.17.0.5");
     private static final URI TEST_HOSTNAME_URI = createUriUnsafe("http://some-address");
 
-    private final Supplier<ProjectInfoMappings> mappings = mock(Supplier.class);
-    private final DockerProxySelector dockerProxySelector = new DockerProxySelector(setupProxyContainer(), mappings);
+    private final DockerContainerInfo containerInfo = mock(DockerContainerInfo.class);
+    private final DockerProxySelector dockerProxySelector = new DockerProxySelector(setupProxyContainer(),
+            containerInfo);
 
     @Test
     public void nonDockerAddressesShouldNotGoThroughAProxy() {
-        when(mappings.get()).thenReturn(ImmutableProjectInfoMappings.builder()
-                .build());
+        when(containerInfo.getIpForHost(TEST_HOSTNAME)).thenReturn(Optional.empty());
+        when(containerInfo.getHostForIp(TEST_HOSTNAME)).thenReturn(Optional.empty());
 
         List<Proxy> selectedProxy = dockerProxySelector.select(TEST_HOSTNAME_URI);
 
@@ -48,9 +49,7 @@ public class DockerProxySelectorTest {
 
     @Test
     public void dockerAddressesShouldGoThroughAProxy() throws URISyntaxException {
-        when(mappings.get()).thenReturn(ImmutableProjectInfoMappings.builder()
-                .putHostToIp(TEST_HOSTNAME, TEST_IP)
-                .build());
+        when(containerInfo.getIpForHost(TEST_HOSTNAME)).thenReturn(Optional.of(TEST_IP));
 
         List<Proxy> selectedProxy = dockerProxySelector.select(TEST_HOSTNAME_URI);
 
@@ -59,9 +58,7 @@ public class DockerProxySelectorTest {
 
     @Test
     public void dockerIpsShouldGoThroughAProxy() {
-        when(mappings.get()).thenReturn(ImmutableProjectInfoMappings.builder()
-                .putIpToHosts(TEST_IP, TEST_HOSTNAME)
-                .build());
+        when(containerInfo.getHostForIp(TEST_IP)).thenReturn(Optional.of(TEST_HOSTNAME));
 
         List<Proxy> selectedProxy = dockerProxySelector.select(TEST_IP_URI);
 

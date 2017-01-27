@@ -61,8 +61,9 @@ targetCompatibility = 1.8
 
 dependencies {
     compile group: 'com.palantir.docker.compose', name: 'docker-compose-rule'
-    compile group: 'net.amygdalum', name: 'xrayinterface'
     compile group: 'junit', name: 'junit'
+    compile group: 'net.amygdalum', name: 'xrayinterface'
+    compile group: 'one.util', name: 'streamex'
 
     processor group: 'org.immutables', name: 'value'
 

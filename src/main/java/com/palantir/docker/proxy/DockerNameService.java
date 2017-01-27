@@ -4,38 +4,35 @@
 
 package com.palantir.docker.proxy;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Multimap;
 import com.google.common.net.InetAddresses;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Map;
-import java.util.function.Supplier;
+import java.util.Optional;
 
 public class DockerNameService implements sun.net.spi.nameservice.NameService {
-    private final Supplier<ProjectInfoMappings> projectInfo;
+    private final DockerContainerInfo containerInfo;
 
-    public DockerNameService(Supplier<ProjectInfoMappings> projectInfo) {
-        this.projectInfo = projectInfo;
+    public DockerNameService(DockerContainerInfo containerInfo) {
+        this.containerInfo = containerInfo;
     }
 
     @Override
     public InetAddress[] lookupAllHostAddr(String hostname) throws UnknownHostException {
-        Map<String, String> hostToIp = projectInfo.get().getHostToIp();
+        Optional<String> containerIp = containerInfo.getIpForHost(hostname);
 
-        if (hostToIp.containsKey(hostname)) {
-            return new InetAddress[] { InetAddresses.forString(hostToIp.get(hostname)) };
+        if (containerIp.isPresent()) {
+            return new InetAddress[] { InetAddresses.forString(containerIp.get()) };
         }
         throw new UnknownHostException(hostname);
     }
 
     @Override
     public String getHostByAddr(byte[] bytes) throws UnknownHostException {
-        Multimap<String, String> ipToHosts = projectInfo.get().getIpToHosts();
         String ipAddress = InetAddress.getByAddress(bytes).getHostAddress();
+        Optional<String> containerHost = containerInfo.getHostForIp(ipAddress);
 
-        if (ipToHosts.containsKey(ipAddress)) {
-            return Iterables.getFirst(ipToHosts.get(ipAddress), null);
+        if (containerHost.isPresent()) {
+            return containerHost.get();
         }
         throw new UnknownHostException(ipAddress);
     }

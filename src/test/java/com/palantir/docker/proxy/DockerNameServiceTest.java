@@ -12,7 +12,7 @@ import static org.mockito.Mockito.when;
 import com.google.common.net.InetAddresses;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.function.Supplier;
+import java.util.Optional;
 import org.junit.Test;
 
 public class DockerNameServiceTest {
@@ -20,14 +20,12 @@ public class DockerNameServiceTest {
     private static final String HOST_IP = "172.0.2.5";
     private static final InetAddress HOST_IP_INET = InetAddresses.forString("172.0.2.5");
 
-    private final Supplier<ProjectInfoMappings> mappings = mock(Supplier.class);
-    private final DockerNameService dockerNameService = new DockerNameService(mappings);
+    private final DockerContainerInfo containerInfo = mock(DockerContainerInfo.class);
+    private final DockerNameService dockerNameService = new DockerNameService(containerInfo);
 
     @Test
     public void shouldReturnIpOfHost() throws UnknownHostException {
-        when(mappings.get()).thenReturn(ImmutableProjectInfoMappings.builder()
-                .putHostToIp(HOST_NAME, HOST_IP)
-                .build());
+        when(containerInfo.getIpForHost(HOST_NAME)).thenReturn(Optional.of(HOST_IP));
 
         InetAddress[] hostAddresses = dockerNameService.lookupAllHostAddr(HOST_NAME);
 
@@ -36,40 +34,33 @@ public class DockerNameServiceTest {
 
     @Test
     public void shouldOnlyQueryTheSupplierOncePerLookupCall() throws UnknownHostException {
-        when(mappings.get()).thenReturn(ImmutableProjectInfoMappings.builder()
-                .putHostToIp(HOST_NAME, HOST_IP)
-                .build());
+        when(containerInfo.getIpForHost(HOST_NAME)).thenReturn(Optional.of(HOST_IP));
 
         dockerNameService.lookupAllHostAddr(HOST_NAME);
 
-        verify(mappings, times(1)).get();
+        verify(containerInfo, times(1)).getIpForHost(HOST_NAME);
     }
 
     @Test
     public void shouldGetIpOfHostFromSupplierEveryTime() throws UnknownHostException {
-        when(mappings.get()).thenReturn(ImmutableProjectInfoMappings.builder()
-                .putHostToIp(HOST_NAME, HOST_IP)
-                .build());
+        when(containerInfo.getIpForHost(HOST_NAME)).thenReturn(Optional.of(HOST_IP));
 
         dockerNameService.lookupAllHostAddr(HOST_NAME);
         dockerNameService.lookupAllHostAddr(HOST_NAME);
 
-        verify(mappings, times(2)).get();
+        verify(containerInfo, times(2)).getIpForHost(HOST_NAME);
     }
 
     @Test(expected = UnknownHostException.class)
     public void shouldThrowUnknownHostExceptionWhenNoIpForHost() throws UnknownHostException {
-        when(mappings.get()).thenReturn(ImmutableProjectInfoMappings.builder()
-                .build());
+        when(containerInfo.getIpForHost(HOST_NAME)).thenReturn(Optional.empty());
 
         dockerNameService.lookupAllHostAddr(HOST_NAME);
     }
 
     @Test
     public void shouldGetHostFromIp() throws UnknownHostException {
-        when(mappings.get()).thenReturn(ImmutableProjectInfoMappings.builder()
-                .putIpToHosts(HOST_IP, HOST_NAME)
-                .build());
+        when(containerInfo.getHostForIp(HOST_IP)).thenReturn(Optional.of(HOST_NAME));
 
         String host = dockerNameService.getHostByAddr(HOST_IP_INET.getAddress());
 
@@ -78,31 +69,26 @@ public class DockerNameServiceTest {
 
     @Test
     public void shouldOnlyQueryTheSupplierOncePerHostByAddrCall() throws UnknownHostException {
-        when(mappings.get()).thenReturn(ImmutableProjectInfoMappings.builder()
-                .putIpToHosts(HOST_IP, HOST_NAME)
-                .build());
+        when(containerInfo.getHostForIp(HOST_IP)).thenReturn(Optional.of(HOST_NAME));
 
         dockerNameService.getHostByAddr(HOST_IP_INET.getAddress());
 
-        verify(mappings, times(1)).get();
+        verify(containerInfo, times(1)).getHostForIp(HOST_IP);
     }
 
     @Test
     public void shouldGetHostOfIpFromSupplierEveryTime() throws UnknownHostException {
-        when(mappings.get()).thenReturn(ImmutableProjectInfoMappings.builder()
-                .putIpToHosts(HOST_IP, HOST_NAME)
-                .build());
+        when(containerInfo.getHostForIp(HOST_IP)).thenReturn(Optional.of(HOST_NAME));
 
         dockerNameService.getHostByAddr(HOST_IP_INET.getAddress());
         dockerNameService.getHostByAddr(HOST_IP_INET.getAddress());
 
-        verify(mappings, times(2)).get();
+        verify(containerInfo, times(2)).getHostForIp(HOST_IP);
     }
 
     @Test(expected = UnknownHostException.class)
     public void shouldThrowUnknownHostExceptionWhenNoHostForIp() throws UnknownHostException {
-        when(mappings.get()).thenReturn(ImmutableProjectInfoMappings.builder()
-                .build());
+        when(containerInfo.getHostForIp(HOST_IP)).thenReturn(Optional.empty());
 
         dockerNameService.getHostByAddr(HOST_IP_INET.getAddress());
     }
