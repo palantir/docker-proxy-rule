@@ -1,4 +1,5 @@
 apply plugin: 'maven-publish'
+apply plugin: 'nebula.maven-resolved-dependencies'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.jfrog.artifactory'
 

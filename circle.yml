@@ -12,6 +12,10 @@ machine:
   services:
     - docker
 
+checkout:
+    post:
+        - "[[ ! -s \"$(git rev-parse --git-dir)/shallow\" ]] || git fetch --unshallow"
+
 dependencies:
   pre:
     - ./scripts/circle-ci/download-moreutils.sh
