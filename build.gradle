@@ -45,6 +45,8 @@ apply plugin: 'com.palantir.baseline-idea'
 apply plugin: 'nebula.dependency-recommender'
 apply plugin: 'org.inferred.processors'
 
+apply from: "${rootDir}/gradle/publish.gradle"
+
 dependencyRecommendations {
     strategy OverrideTransitives
     propertiesFile file: project.rootProject.file('versions.props')
