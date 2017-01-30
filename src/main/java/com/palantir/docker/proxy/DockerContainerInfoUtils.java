@@ -60,8 +60,8 @@ public class DockerContainerInfoUtils {
                 String labelsString = Iterables.getOnlyElement(runDockerProcess(
                         docker,
                         "inspect",
-                        containerId,
-                        "--format", labelsFormat));
+                        "--format", labelsFormat,
+                        containerId));
                 List<String> labels = Splitter.on(',')
                         .omitEmptyStrings()
                         .splitToList(labelsString);
@@ -78,9 +78,9 @@ public class DockerContainerInfoUtils {
             String ip = Iterables.getOnlyElement(runDockerProcess(
                     docker,
                     "inspect",
-                    containerId,
                     "--format",
-                    "{{ range .NetworkSettings.Networks }}{{ .IPAddress }}{{ end }}"));
+                    "{{ range .NetworkSettings.Networks }}{{ .IPAddress }}{{ end }}",
+                    containerId));
             Preconditions.checkState(InetAddresses.isInetAddress(ip), "IP address is not valid: " + ip);
             return ip;
         } catch (InterruptedException | IOException | RuntimeException e) {
@@ -94,8 +94,8 @@ public class DockerContainerInfoUtils {
                     docker,
                     "network",
                     "inspect",
-                    networkName,
-                    "--format", "{{ range $container, $_ := .Containers }}{{ $container }},{{ end }}"));
+                    "--format", "{{ range $container, $_ := .Containers }}{{ $container }},{{ end }}",
+                    networkName));
 
             return Splitter.on(',')
                     .omitEmptyStrings()
