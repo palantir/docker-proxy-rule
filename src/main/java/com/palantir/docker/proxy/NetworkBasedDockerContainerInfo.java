@@ -35,4 +35,9 @@ public class NetworkBasedDockerContainerInfo implements DockerContainerInfo {
                 .keys()
                 .findAny();
     }
+
+    @Override
+    public String getNetworkName() {
+        return networkName;
+    }
 }

@@ -36,4 +36,9 @@ public class ProjectBasedDockerContainerInfo implements DockerContainerInfo {
                 .keys()
                 .findAny();
     }
+
+    @Override
+    public String getNetworkName() {
+        return projectName.asString() + "_default";
+    }
 }

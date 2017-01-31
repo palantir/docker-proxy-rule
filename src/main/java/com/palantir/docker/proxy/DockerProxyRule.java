@@ -11,6 +11,7 @@ import com.palantir.docker.compose.DockerComposeRule;
 import com.palantir.docker.compose.configuration.ProjectName;
 import com.palantir.docker.compose.configuration.ShutdownStrategy;
 import com.palantir.docker.compose.connection.Container;
+import com.palantir.docker.compose.connection.DockerMachine;
 import com.palantir.docker.compose.execution.DockerExecutable;
 import com.palantir.docker.compose.execution.DockerExecutionException;
 import com.palantir.docker.compose.logging.LogDirectory;
@@ -25,33 +26,52 @@ import net.amygdalum.xrayinterface.XRayInterface;
 import org.junit.rules.ExternalResource;
 
 public class DockerProxyRule extends ExternalResource {
+    private final DockerContainerInfo dockerContainerInfo;
     private final DockerComposeRule dockerComposeRule;
-    private final Function<DockerExecutable, DockerContainerInfo> dockerContainerInfoGenerator;
 
     private ProxySelector originalProxySelector;
 
-    public DockerProxyRule(ProjectName projectName, Class<?> classToLogFor) {
+    /**
+     * Creates a {@link DockerProxyRule} which will create a proxy and DNS so that
+     * tests can interface with docker containers directly.
+     *
+     * @param dockerContainerInfoCreator A {@link Function} that creates the DockerContainerInfo to use
+     * @param classToLogFor The class using {@link DockerProxyRule}
+     */
+    public DockerProxyRule(
+            Function<DockerExecutable, DockerContainerInfo> dockerContainerInfoCreator,
+            Class<?> classToLogFor) {
+        this.dockerContainerInfo = dockerContainerInfoCreator.apply(DockerExecutable.builder()
+                .dockerConfiguration(DockerMachine.localMachine().build())
+                .build());
         String logDirectory = DockerProxyRule.class.getSimpleName() + "-" + classToLogFor.getSimpleName();
         this.dockerComposeRule = DockerComposeRule.builder()
-                .file(getDockerComposeFile(projectName).getPath())
+                .file(getDockerComposeFile(this.dockerContainerInfo.getNetworkName()).getPath())
                 .waitingForService("proxy", Container::areAllPortsOpen)
                 .saveLogsTo(LogDirectory.circleAwareLogDirectory(logDirectory))
                 .shutdownStrategy(ShutdownStrategy.AGGRESSIVE_WITH_NETWORK_CLEANUP)
                 .retryAttempts(0)
                 .build();
-        this.dockerContainerInfoGenerator = docker -> new ProjectBasedDockerContainerInfo(docker, projectName);
     }
 
-    public DockerProxyRule(String networkName, Class<?> classToLogFor) {
-        String logDirectory = DockerProxyRule.class.getSimpleName() + "-" + classToLogFor.getSimpleName();
-        this.dockerComposeRule = DockerComposeRule.builder()
-                .file(getDockerComposeFile(networkName).getPath())
-                .waitingForService("proxy", Container::areAllPortsOpen)
-                .saveLogsTo(LogDirectory.circleAwareLogDirectory(logDirectory))
-                .shutdownStrategy(ShutdownStrategy.AGGRESSIVE_WITH_NETWORK_CLEANUP)
-                .retryAttempts(0)
-                .build();
-        this.dockerContainerInfoGenerator = docker -> new NetworkBasedDockerContainerInfo(docker, networkName);
+    /**
+     * Creates a {@link DockerProxyRule} using a {@link ProjectBasedDockerContainerInfo}.
+     *
+     * @param projectName The docker-compose-rule ProjectName to use to find the containers
+     * @param classToLogFor The class using {@link DockerProxyRule}
+     */
+    public static DockerProxyRule fromProjectName(ProjectName projectName, Class<?> classToLogFor) {
+        return new DockerProxyRule(docker -> new ProjectBasedDockerContainerInfo(docker, projectName), classToLogFor);
+    }
+
+    /**
+     * Creates a {@link DockerProxyRule} using a {@link NetworkBasedDockerContainerInfo}.
+     *
+     * @param networkName The network name to use to find the containers
+     * @param classToLogFor The class using {@link DockerProxyRule}
+     */
+    public static DockerProxyRule fromNetworkName(String networkName, Class<?> classToLogFor) {
+        return new DockerProxyRule(docker -> new NetworkBasedDockerContainerInfo(docker, networkName), classToLogFor);
     }
 
     @Override
@@ -59,10 +79,8 @@ public class DockerProxyRule extends ExternalResource {
         try {
             originalProxySelector = ProxySelector.getDefault();
             dockerComposeRule.before();
-            DockerContainerInfo containerInfo = dockerContainerInfoGenerator.apply(
-                    dockerComposeRule.dockerExecutable());
-            getNameServices().add(0, new DockerNameService(containerInfo));
-            ProxySelector.setDefault(new DockerProxySelector(dockerComposeRule.containers(), containerInfo));
+            getNameServices().add(0, new DockerNameService(dockerContainerInfo));
+            ProxySelector.setDefault(new DockerProxySelector(dockerComposeRule.containers(), dockerContainerInfo));
         } catch (DockerExecutionException e) {
             if (e.getMessage().contains("declared as external")) {
                 throw new IllegalStateException(
@@ -78,10 +96,6 @@ public class DockerProxyRule extends ExternalResource {
         ProxySelector.setDefault(originalProxySelector);
         getNameServices().remove(0);
         dockerComposeRule.after();
-    }
-
-    private static File getDockerComposeFile(ProjectName projectName) {
-        return getDockerComposeFile(projectName.asString() + "_default");
     }
 
     private static File getDockerComposeFile(String networkName) {

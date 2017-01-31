@@ -5,7 +5,6 @@ package com.palantir.docker.proxy;
 
 import com.google.common.base.Throwables;
 import com.palantir.docker.compose.DockerComposeRule;
-import com.palantir.docker.compose.configuration.ProjectName;
 import com.palantir.docker.compose.configuration.ShutdownStrategy;
 import com.palantir.docker.compose.connection.Container;
 import com.palantir.docker.compose.logging.LogDirectory;
@@ -25,7 +24,7 @@ public class DockerProxyRuleTest {
 
     @Test
     public void canReachDockerContainerByHostnameWithProjectSpecified() {
-        DockerProxyRule dockerProxyRule = new DockerProxyRule(
+        DockerProxyRule dockerProxyRule = DockerProxyRule.fromProjectName(
                 DOCKER_COMPOSE_RULE.projectName(),
                 DockerProxyRuleTest.class);
         try {
@@ -41,8 +40,8 @@ public class DockerProxyRuleTest {
 
     @Test
     public void canReachDockerContainerByHostnameWithNetworkSpecified() {
-        DockerProxyRule dockerProxyRule = new DockerProxyRule(
-                DOCKER_COMPOSE_RULE.projectName(),
+        DockerProxyRule dockerProxyRule = DockerProxyRule.fromNetworkName(
+                DOCKER_COMPOSE_RULE.projectName().asString() + "_default",
                 DockerProxyRuleTest.class);
         try {
             dockerProxyRule.before();
@@ -58,7 +57,7 @@ public class DockerProxyRuleTest {
     @Test(expected = IllegalStateException.class)
     public void runningProxyRuleBeforeDockerComposeRuleFails() {
         try {
-            new DockerProxyRule(ProjectName.fromString("doesnotexist"), DockerProxyRuleTest.class).before();
+            DockerProxyRule.fromNetworkName("doesnotexist", DockerProxyRuleTest.class).before();
         } catch (Throwable e) {
             throw Throwables.propagate(e);
         }
