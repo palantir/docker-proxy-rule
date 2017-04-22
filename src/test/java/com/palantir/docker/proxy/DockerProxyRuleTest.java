@@ -23,9 +23,57 @@ public class DockerProxyRuleTest {
             .build();
 
     @Test
+    public void canReachDockerContainerByContainerNameWithProjectSpecified() {
+        DockerProxyRule dockerProxyRule = DockerProxyRule.fromProjectName(
+                DOCKER_COMPOSE_RULE.projectName(),
+                DockerProxyRuleTest.class);
+        try {
+            dockerProxyRule.before();
+            URLConnection urlConnection = new URL("http://webserver").openConnection();
+            urlConnection.connect();
+        } catch (Throwable e) {
+            throw Throwables.propagate(e);
+        } finally {
+            dockerProxyRule.after();
+        }
+    }
+
+    @Test
     public void canReachDockerContainerByHostnameWithProjectSpecified() {
         DockerProxyRule dockerProxyRule = DockerProxyRule.fromProjectName(
                 DOCKER_COMPOSE_RULE.projectName(),
+                DockerProxyRuleTest.class);
+        try {
+            dockerProxyRule.before();
+            URLConnection urlConnection = new URL("http://web").openConnection();
+            urlConnection.connect();
+        } catch (Throwable e) {
+            throw Throwables.propagate(e);
+        } finally {
+            dockerProxyRule.after();
+        }
+    }
+
+    @Test
+    public void canReachDockerContainerByHostnameAndDomainNameWithProjectSpecified() {
+        DockerProxyRule dockerProxyRule = DockerProxyRule.fromProjectName(
+                DOCKER_COMPOSE_RULE.projectName(),
+                DockerProxyRuleTest.class);
+        try {
+            dockerProxyRule.before();
+            URLConnection urlConnection = new URL("http://web.server.here").openConnection();
+            urlConnection.connect();
+        } catch (Throwable e) {
+            throw Throwables.propagate(e);
+        } finally {
+            dockerProxyRule.after();
+        }
+    }
+
+    @Test
+    public void canReachDockerContainerByContainerNameWithNetworkSpecified() {
+        DockerProxyRule dockerProxyRule = DockerProxyRule.fromNetworkName(
+                DOCKER_COMPOSE_RULE.projectName().asString() + "_default",
                 DockerProxyRuleTest.class);
         try {
             dockerProxyRule.before();
@@ -45,7 +93,7 @@ public class DockerProxyRuleTest {
                 DockerProxyRuleTest.class);
         try {
             dockerProxyRule.before();
-            URLConnection urlConnection = new URL("http://webserver").openConnection();
+            URLConnection urlConnection = new URL("http://web").openConnection();
             urlConnection.connect();
         } catch (Throwable e) {
             throw Throwables.propagate(e);
@@ -53,6 +101,23 @@ public class DockerProxyRuleTest {
             dockerProxyRule.after();
         }
     }
+
+    @Test
+    public void canReachDockerContainerByHostnameAndDomainNameWithNetworkSpecified() {
+        DockerProxyRule dockerProxyRule = DockerProxyRule.fromNetworkName(
+                DOCKER_COMPOSE_RULE.projectName().asString() + "_default",
+                DockerProxyRuleTest.class);
+        try {
+            dockerProxyRule.before();
+            URLConnection urlConnection = new URL("http://web.server.here").openConnection();
+            urlConnection.connect();
+        } catch (Throwable e) {
+            throw Throwables.propagate(e);
+        } finally {
+            dockerProxyRule.after();
+        }
+    }
+
 
     @Test(expected = IllegalStateException.class)
     public void runningProxyRuleBeforeDockerComposeRuleFails() {
