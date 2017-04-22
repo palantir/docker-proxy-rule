@@ -75,7 +75,7 @@ public class DockerProxyRule extends ExternalResource {
     }
 
     @Override
-    public void before() throws Throwable {
+    public void before() throws IOException, InterruptedException {
         try {
             originalProxySelector = ProxySelector.getDefault();
             dockerComposeRule.before();
