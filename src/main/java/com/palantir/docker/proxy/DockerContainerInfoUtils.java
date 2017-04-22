@@ -4,6 +4,7 @@
 
 package com.palantir.docker.proxy;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Throwables;
@@ -20,8 +21,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import one.util.streamex.StreamEx;
 
 public class DockerContainerInfoUtils {
+    private static final List<String> DOCKER_NAME_TAGS = ImmutableList.of(
+            "{{ .Name }}",
+            "{{ .Config.Hostname }}",
+            "{{ .Config.Hostname }}.{{ .Config.Domainname }}");
     private static final List<String> DOCKER_NAME_LABELS = ImmutableList.of(
             "com.docker.compose.service",
             "hostname");
@@ -32,42 +38,18 @@ public class DockerContainerInfoUtils {
 
     public static List<String> getAllNamesForContainerId(DockerExecutable docker, String containerId) {
         try {
-            // If the docker version is 1.13.0, then .Label doesn't work.
-            // See https://github.com/docker/docker/pull/30291
-            String dockerVersion = getDockerVersion(docker);
-
-            String namesFormat = "{{ .Names }}";
-            if (!dockerVersion.equals("1.13.0")) {
-                namesFormat += DOCKER_NAME_LABELS.stream()
-                        .map(label -> String.format(",{{ .Label \"%s\" }}", label))
-                        .collect(Collectors.joining());
-            }
-            String namesString = Iterables.getOnlyElement(runDockerProcess(
+            String labelsFormat = StreamEx.of(DOCKER_NAME_LABELS)
+                    .map(label -> String.format("{{ index .Config.Labels \"%s\" }}", label))
+                    .append(DOCKER_NAME_TAGS)
+                    .collect(Collectors.joining(","));
+            String labelsString = Iterables.getOnlyElement(runDockerProcess(
                     docker,
-                    "ps",
-                    "--filter", "id=" + containerId,
-                    "--format", namesFormat));
-            List<String> names = Splitter.on(',')
+                    "inspect",
+                    "--format", labelsFormat,
+                    containerId));
+            return Splitter.on(CharMatcher.anyOf(",/"))
                     .omitEmptyStrings()
-                    .splitToList(namesString);
-            ImmutableList.Builder<String> allContainerNames = ImmutableList.<String>builder()
-                    .add(containerId)
-                    .addAll(names);
-            if (dockerVersion.equals("1.13.0")) {
-                String labelsFormat = DOCKER_NAME_LABELS.stream()
-                        .map(label -> String.format("{{ index .Config.Labels \"%s\" }}", label))
-                        .collect(Collectors.joining(","));
-                String labelsString = Iterables.getOnlyElement(runDockerProcess(
-                        docker,
-                        "inspect",
-                        "--format", labelsFormat,
-                        containerId));
-                List<String> labels = Splitter.on(',')
-                        .omitEmptyStrings()
-                        .splitToList(labelsString);
-                allContainerNames.addAll(labels);
-            }
-            return allContainerNames.build();
+                    .splitToList(labelsString);
         } catch (IOException | InterruptedException e) {
             throw Throwables.propagate(e);
         }
@@ -130,21 +112,9 @@ public class DockerContainerInfoUtils {
         return getLinesFromInputStream(process.getInputStream());
     }
 
-    private static String getOnlyLineFromInputStream(InputStream inputStream) throws IOException {
-        return Iterables.getOnlyElement(getLinesFromInputStream(inputStream));
-    }
-
     private static List<String> getLinesFromInputStream(InputStream inputStream) throws IOException {
         try (InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
             return CharStreams.readLines(inputStreamReader);
         }
-    }
-
-    private static String getDockerVersion(DockerExecutable docker) throws IOException, InterruptedException {
-        Process process = docker.execute("version", "--format", "{{ .Client.Version }}");
-        if (!process.waitFor(5, TimeUnit.SECONDS) || process.exitValue() != 0) {
-            throw new IllegalStateException("Couldn't get docker version");
-        }
-        return getOnlyLineFromInputStream(process.getInputStream());
     }
 }
