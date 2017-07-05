@@ -4,10 +4,14 @@
 package com.palantir.docker.proxy;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableList;
 import com.palantir.docker.compose.connection.Cluster;
 import com.palantir.docker.compose.connection.Container;
 import com.palantir.docker.compose.connection.ContainerCache;
@@ -16,10 +20,12 @@ import com.palantir.docker.compose.connection.ImmutableCluster;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.net.ProxySelector;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import org.junit.Before;
 import org.junit.Test;
 
 public class DockerProxySelectorTest {
@@ -34,17 +40,27 @@ public class DockerProxySelectorTest {
     private static final URI TEST_HOSTNAME_URI = createUriUnsafe("http://some-address");
 
     private final DockerContainerInfo containerInfo = mock(DockerContainerInfo.class);
-    private final DockerProxySelector dockerProxySelector = new DockerProxySelector(setupProxyContainer(),
-            containerInfo);
+    private final ProxySelector originalProxySelector = mock(ProxySelector.class);
+    private final ProxySelector dockerProxySelector = new DockerProxySelector(
+            setupProxyContainer(),
+            containerInfo,
+            originalProxySelector);
+
+    @Before
+    public void originalProxySelectorIsNoProxy() {
+        when(originalProxySelector.select(any())).thenReturn(ImmutableList.of(Proxy.NO_PROXY));
+    }
 
     @Test
-    public void nonDockerAddressesShouldNotGoThroughAProxy() {
+    public void nonDockerAddressesShouldDelegateToPassedInSelector() {
         when(containerInfo.getIpForHost(TEST_HOSTNAME)).thenReturn(Optional.empty());
         when(containerInfo.getHostForIp(TEST_HOSTNAME)).thenReturn(Optional.empty());
 
         List<Proxy> selectedProxy = dockerProxySelector.select(TEST_HOSTNAME_URI);
 
         assertThat(selectedProxy).containsExactly(Proxy.NO_PROXY);
+
+        verify(originalProxySelector, times(1)).select(TEST_HOSTNAME_URI);
     }
 
     @Test
@@ -95,6 +111,17 @@ public class DockerProxySelectorTest {
                 TEST_HOSTNAME_URI,
                 PROXY_ADDRESS,
                 new IOException());
+    }
+
+    @Test
+    public void connectionFailedShouldDelegateToPassedInSelector() {
+        IOException exception = new IOException();
+        dockerProxySelector.connectFailed(
+                TEST_HOSTNAME_URI,
+                PROXY_ADDRESS,
+                exception);
+
+        verify(originalProxySelector, times(1)).connectFailed(TEST_HOSTNAME_URI, PROXY_ADDRESS, exception);
     }
 
     private static Cluster setupProxyContainer() {

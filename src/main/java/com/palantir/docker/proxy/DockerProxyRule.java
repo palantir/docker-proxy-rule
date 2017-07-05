@@ -80,7 +80,10 @@ public class DockerProxyRule extends ExternalResource {
             originalProxySelector = ProxySelector.getDefault();
             dockerComposeRule.before();
             getNameServices().add(0, new DockerNameService(dockerContainerInfo));
-            ProxySelector.setDefault(new DockerProxySelector(dockerComposeRule.containers(), dockerContainerInfo));
+            ProxySelector.setDefault(new DockerProxySelector(
+                    dockerComposeRule.containers(),
+                    dockerContainerInfo,
+                    originalProxySelector));
         } catch (DockerExecutionException e) {
             if (e.getMessage().contains("declared as external")) {
                 throw new IllegalStateException(

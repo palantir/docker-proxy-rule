@@ -22,12 +22,14 @@ public class DockerProxySelector extends ProxySelector {
 
     private final InetSocketAddress proxyAddress;
     private final DockerContainerInfo containerInfo;
+    private final ProxySelector delegate;
 
-    public DockerProxySelector(Cluster containers, DockerContainerInfo containerInfo) {
+    public DockerProxySelector(Cluster containers, DockerContainerInfo containerInfo, ProxySelector delegate) {
         this.proxyAddress = InetSocketAddress.createUnresolved(
                 containers.ip(),
                 containers.container(PROXY_CONTAINER_NAME).port(PROXY_CONTAINER_PORT).getExternalPort());
         this.containerInfo = containerInfo;
+        this.delegate = delegate;
     }
 
     @Override
@@ -37,12 +39,13 @@ public class DockerProxySelector extends ProxySelector {
         if (containerIpForUriHost.isPresent() || containerHostForUriHost.isPresent()) {
             return ImmutableList.of(new Proxy(Proxy.Type.SOCKS, proxyAddress));
         } else {
-            return ImmutableList.of(Proxy.NO_PROXY);
+            return delegate.select(uri);
         }
     }
 
     @Override
     public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
         Preconditions.checkArgument(uri != null && sa != null && ioe != null, "Invalid connectFailed call");
+        delegate.connectFailed(uri, sa, ioe);
     }
 }
