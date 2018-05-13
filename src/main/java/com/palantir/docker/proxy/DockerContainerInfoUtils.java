@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import one.util.streamex.StreamEx;
@@ -55,7 +56,7 @@ public class DockerContainerInfoUtils {
         }
     }
 
-    public static String getContainerIpFromId(DockerExecutable docker, String containerId) {
+    public static Optional<String> getContainerIpFromId(DockerExecutable docker, String containerId) {
         try {
             String ip = Iterables.getOnlyElement(runDockerProcess(
                     docker,
@@ -63,8 +64,14 @@ public class DockerContainerInfoUtils {
                     "--format",
                     "{{ range .NetworkSettings.Networks }}{{ .IPAddress }}{{ end }}",
                     containerId));
+
+            // stopped containers don't return IPs
+            if (ip.trim().isEmpty()) {
+                return Optional.empty();
+            }
+
             Preconditions.checkState(InetAddresses.isInetAddress(ip), "IP address is not valid: " + ip);
-            return ip;
+            return Optional.of(ip);
         } catch (InterruptedException | IOException | RuntimeException e) {
             throw new IllegalStateException("Couldn't get IP for container ID " + containerId, e);
         }
