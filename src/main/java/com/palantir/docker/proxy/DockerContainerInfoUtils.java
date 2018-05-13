@@ -4,6 +4,7 @@
 
 package com.palantir.docker.proxy;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
@@ -19,6 +20,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import one.util.streamex.StreamEx;
@@ -31,6 +33,9 @@ public class DockerContainerInfoUtils {
     private static final List<String> DOCKER_NAME_LABELS = ImmutableList.of(
             "com.docker.compose.service",
             "hostname");
+
+    @VisibleForTesting
+    static final String IP_FORMAT_STRING = "{{ range .NetworkSettings.Networks }}{{ .IPAddress }}{{ end }}";
 
     private DockerContainerInfoUtils() {
         // Utility class
@@ -55,16 +60,18 @@ public class DockerContainerInfoUtils {
         }
     }
 
-    public static String getContainerIpFromId(DockerExecutable docker, String containerId) {
+    public static Optional<String> getContainerIpFromId(DockerExecutable docker, String containerId) {
         try {
-            String ip = Iterables.getOnlyElement(runDockerProcess(
-                    docker,
-                    "inspect",
-                    "--format",
-                    "{{ range .NetworkSettings.Networks }}{{ .IPAddress }}{{ end }}",
-                    containerId));
+            String ip = Iterables.getOnlyElement(
+                    runDockerProcess(docker, "inspect", "--format", IP_FORMAT_STRING, containerId));
+
+            // stopped containers don't return IPs
+            if (ip.trim().isEmpty()) {
+                return Optional.empty();
+            }
+
             Preconditions.checkState(InetAddresses.isInetAddress(ip), "IP address is not valid: " + ip);
-            return ip;
+            return Optional.of(ip);
         } catch (InterruptedException | IOException | RuntimeException e) {
             throw new IllegalStateException("Couldn't get IP for container ID " + containerId, e);
         }

@@ -23,6 +23,8 @@ public class NetworkBasedDockerContainerInfo implements DockerContainerInfo {
                 .mapToEntry(containerId -> DockerContainerInfoUtils.getAllNamesForContainerId(docker, containerId))
                 .filterValues(names -> names.contains(hostname))
                 .mapToValue((containerId, names) -> DockerContainerInfoUtils.getContainerIpFromId(docker, containerId))
+                .filterValues(Optional::isPresent)
+                .mapValues(Optional::get)
                 .values()
                 .findAny();
     }
@@ -31,6 +33,8 @@ public class NetworkBasedDockerContainerInfo implements DockerContainerInfo {
     public Optional<String> getHostForIp(String ip) {
         return StreamEx.of(DockerContainerInfoUtils.getContainerIdsOnNetwork(docker, networkName))
                 .mapToEntry(containerId -> DockerContainerInfoUtils.getContainerIpFromId(docker, containerId))
+                .filterValues(Optional::isPresent)
+                .mapValues(Optional::get)
                 .filterValues(ip::equals)
                 .keys()
                 .findAny();
