@@ -4,6 +4,7 @@
 
 package com.palantir.docker.proxy;
 
+import static com.palantir.docker.proxy.DockerContainerInfoUtils.IP_FORMAT_STRING;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -21,7 +22,6 @@ import org.junit.Test;
 
 public class DockerContainerInfoUtilsTest {
     private static final String CONTAINER_ID = "container-id";
-    private static final String IP_FORMAT_STRING = "{{ range .NetworkSettings.Networks }}{{ .IPAddress }}{{ end }}";
 
     private final Process response = mock(Process.class);
     private final DockerExecutable dockerExecutable = mock(DockerExecutable.class);

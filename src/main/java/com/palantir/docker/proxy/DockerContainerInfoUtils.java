@@ -4,6 +4,7 @@
 
 package com.palantir.docker.proxy;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
@@ -33,6 +34,9 @@ public class DockerContainerInfoUtils {
             "com.docker.compose.service",
             "hostname");
 
+    @VisibleForTesting
+    static final String IP_FORMAT_STRING = "{{ range .NetworkSettings.Networks }}{{ .IPAddress }}{{ end }}";
+
     private DockerContainerInfoUtils() {
         // Utility class
     }
@@ -58,12 +62,8 @@ public class DockerContainerInfoUtils {
 
     public static Optional<String> getContainerIpFromId(DockerExecutable docker, String containerId) {
         try {
-            String ip = Iterables.getOnlyElement(runDockerProcess(
-                    docker,
-                    "inspect",
-                    "--format",
-                    "{{ range .NetworkSettings.Networks }}{{ .IPAddress }}{{ end }}",
-                    containerId));
+            String ip = Iterables.getOnlyElement(
+                    runDockerProcess(docker, "inspect", "--format", IP_FORMAT_STRING, containerId));
 
             // stopped containers don't return IPs
             if (ip.trim().isEmpty()) {
