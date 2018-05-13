@@ -14,7 +14,6 @@ import java.net.ProxySelector;
 import java.net.SocketAddress;
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 public class DockerProxySelector extends ProxySelector {
     public static final String PROXY_CONTAINER_NAME = "proxy";
@@ -34,9 +33,8 @@ public class DockerProxySelector extends ProxySelector {
 
     @Override
     public List<Proxy> select(URI uri) {
-        Optional<String> containerIpForUriHost = containerInfo.getIpForHost(uri.getHost());
-        Optional<String> containerHostForUriHost = containerInfo.getHostForIp(uri.getHost());
-        if (containerIpForUriHost.isPresent() || containerHostForUriHost.isPresent()) {
+        String host = uri.getHost();
+        if (containerInfo.getIpForHost(host).isPresent() || containerInfo.getHostForIp(host).isPresent()) {
             return ImmutableList.of(new Proxy(Proxy.Type.SOCKS, proxyAddress));
         } else {
             return delegate.select(uri);
