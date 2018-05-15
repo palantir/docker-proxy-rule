@@ -9,7 +9,6 @@ import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.palantir.docker.compose.DockerComposeRule;
 import com.palantir.docker.compose.configuration.ProjectName;
-import com.palantir.docker.compose.configuration.ShutdownStrategy;
 import com.palantir.docker.compose.connection.Container;
 import com.palantir.docker.compose.connection.DockerMachine;
 import com.palantir.docker.compose.execution.DockerExecutable;
@@ -49,7 +48,6 @@ public class DockerProxyRule extends ExternalResource {
                 .file(getDockerComposeFile(this.dockerContainerInfo.getNetworkName()).getPath())
                 .waitingForService("proxy", Container::areAllPortsOpen)
                 .saveLogsTo(LogDirectory.circleAwareLogDirectory(logDirectory))
-                .shutdownStrategy(ShutdownStrategy.AGGRESSIVE_WITH_NETWORK_CLEANUP)
                 .retryAttempts(0)
                 .build();
     }

@@ -4,7 +4,6 @@
 package com.palantir.docker.proxy;
 
 import com.palantir.docker.compose.DockerComposeRule;
-import com.palantir.docker.compose.configuration.ShutdownStrategy;
 import com.palantir.docker.compose.connection.Container;
 import com.palantir.docker.compose.logging.LogDirectory;
 import java.io.IOException;
@@ -19,7 +18,6 @@ public class DockerProxyRuleTest {
             .file("src/test/resources/DockerProxyRuleTest-services.yml")
             .saveLogsTo(LogDirectory.circleAwareLogDirectory(DockerProxyRuleTest.class))
             .waitingForService("webserver", Container::areAllPortsOpen)
-            .shutdownStrategy(ShutdownStrategy.AGGRESSIVE_WITH_NETWORK_CLEANUP)
             .build();
 
     @Test
