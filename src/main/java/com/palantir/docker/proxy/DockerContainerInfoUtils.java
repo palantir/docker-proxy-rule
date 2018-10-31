@@ -113,7 +113,7 @@ public class DockerContainerInfoUtils {
     private static List<String> runDockerProcess(DockerExecutable docker, String... args)
             throws IOException, InterruptedException {
         Process process = docker.execute(args);
-        if (!process.waitFor(5, TimeUnit.SECONDS) || process.exitValue() != 0) {
+        if (!process.waitFor(15, TimeUnit.SECONDS) || process.exitValue() != 0) {
             throw new IllegalStateException("Unable to execute docker command: " + ImmutableList.copyOf(args));
         }
         return getLinesFromInputStream(process.getInputStream());
