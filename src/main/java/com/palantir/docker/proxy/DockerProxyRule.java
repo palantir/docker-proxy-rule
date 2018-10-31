@@ -40,10 +40,11 @@ public class DockerProxyRule extends ExternalResource {
     public DockerProxyRule(
             Function<DockerExecutable, DockerContainerInfo> dockerContainerInfoCreator,
             Class<?> classToLogFor) {
-        this.dockerContainerInfo = dockerContainerInfoCreator.apply(DockerExecutable.builder()
+        DockerContainerInfo builtDockerContainerInfo = dockerContainerInfoCreator.apply(DockerExecutable.builder()
                 .dockerConfiguration(DockerMachine.localMachine().build())
                 .build());
         String logDirectory = DockerProxyRule.class.getSimpleName() + "-" + classToLogFor.getSimpleName();
+        this.dockerContainerInfo = new CachingDockerContainerInfo(builtDockerContainerInfo);
         this.dockerComposeRule = DockerComposeRule.builder()
                 .file(getDockerComposeFile(this.dockerContainerInfo.getNetworkName()).getPath())
                 .waitingForService("proxy", Container::areAllPortsOpen)

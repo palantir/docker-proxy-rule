@@ -1,4 +1,4 @@
-com.palantir.docker.compose:docker-compose-rule-junit4 = 0.33.0
+com.palantir.docker.compose:docker-compose-rule-junit4 = 0.34.0
 junit:junit = 4.12
 net.amygdalum:xrayinterface = 0.3.0
 one.util:streamex = 0.6.3
