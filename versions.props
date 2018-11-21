@@ -1,8 +1,8 @@
 com.palantir.docker.compose:docker-compose-rule-junit4 = 0.34.0
 junit:junit = 4.12
 net.amygdalum:xrayinterface = 0.3.0
-one.util:streamex = 0.6.3
-org.assertj:assertj-core = 3.6.1
-org.immutables:value = 2.4.2
-org.mockito:mockito-core = 2.6.8
-org.objenesis:objenesis = 2.5
+one.util:streamex = 0.6.7
+org.assertj:assertj-core = 3.11.1
+org.immutables:value = 2.7.3
+org.mockito:mockito-core = 2.23.4
+org.objenesis:objenesis = 3.0.1
