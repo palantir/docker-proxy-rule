@@ -16,19 +16,26 @@ import com.palantir.docker.compose.execution.DockerExecutionException;
 import com.palantir.docker.compose.logging.LogDirectory;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.net.InetAddress;
 import java.net.ProxySelector;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Function;
-import net.amygdalum.xrayinterface.XRayInterface;
 import org.junit.rules.ExternalResource;
 
+@SuppressWarnings("PreferSafeLoggableExceptions")
 public final class DockerProxyRule extends ExternalResource {
     private final DockerContainerInfo dockerContainerInfo;
     private final DockerComposeRule dockerComposeRule;
 
     private ProxySelector originalProxySelector;
+    private Object originalNameService;
 
     /**
      * Creates a {@link DockerProxyRule} which will create a proxy and DNS so that
@@ -74,12 +81,11 @@ public final class DockerProxyRule extends ExternalResource {
     }
 
     @Override
-    @SuppressWarnings("PreferSafeLoggableExceptions")
     public void before() throws IOException, InterruptedException {
         try {
             originalProxySelector = ProxySelector.getDefault();
             dockerComposeRule.before();
-            getNameServices().add(0, new DockerNameService(dockerContainerInfo));
+            setNameService(new DockerNameService(dockerContainerInfo));
             ProxySelector.setDefault(new DockerProxySelector(
                     dockerComposeRule.containers(),
                     dockerContainerInfo,
@@ -97,7 +103,7 @@ public final class DockerProxyRule extends ExternalResource {
     @Override
     public void after() {
         ProxySelector.setDefault(originalProxySelector);
-        getNameServices().remove(0);
+        unsetNameService();
         dockerComposeRule.after();
     }
 
@@ -117,14 +123,100 @@ public final class DockerProxyRule extends ExternalResource {
         }
     }
 
-    private static List<sun.net.spi.nameservice.NameService> getNameServices() {
-        return XRayInterface
-                .xray(InetAddress.class)
-                .to(OpenInetAddress.class)
-                .getNameServices();
+    private void setNameService(DockerNameService nameService) {
+        String version = System.getProperty("java.version");
+        if (version.startsWith("1.")) {
+            getJava8NameServices().add(0, wrapNameService("sun.net.spi.nameservice.NameService", nameService, null));
+        } else {
+            originalNameService = getJava9NameService();
+            setJava9NameService(wrapNameService("java.net.InetAddress$NameService", nameService, originalNameService));
+        }
     }
 
-    private interface OpenInetAddress {
-        List<sun.net.spi.nameservice.NameService> getNameServices();
+    private void unsetNameService() {
+        String version = System.getProperty("java.version");
+        if (version.startsWith("1.")) {
+            getJava8NameServices().remove(0);
+        } else {
+            setJava9NameService(originalNameService);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<Object> getJava8NameServices() {
+        try {
+            Field nameServices = InetAddress.class.getDeclaredField("nameServices");
+            nameServices.setAccessible(true);
+            return (List<Object>) nameServices.get(null);
+        } catch (Throwable e) {
+            throw new IllegalStateException("Unable to get Java 8 name services", e);
+        }
+    }
+
+    private static Object getJava9NameService() {
+        try {
+            Field nameService = InetAddress.class.getDeclaredField("nameService");
+            nameService.setAccessible(true);
+            return nameService.get(null);
+        } catch (Throwable e) {
+            throw new IllegalStateException("Unable to get Java 9+ name service", e);
+        }
+    }
+
+    private static void setJava9NameService(Object newNameService) {
+        try {
+            Field nameService = InetAddress.class.getDeclaredField("nameService");
+            nameService.setAccessible(true);
+            nameService.set(null, newNameService);
+        } catch (Throwable e) {
+            throw new IllegalStateException("Unable to set Java 9+ name service", e);
+        }
+    }
+
+    private static Object wrapNameService(String className, Object delegate, Object fallback) {
+        try {
+            Class<?> clazz = Class.forName(className);
+            return Proxy.newProxyInstance(
+                    clazz.getClassLoader(),
+                    new Class<?>[] { clazz },
+                    new ForwardingNameServiceHandler(delegate, fallback));
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException("Unable to find class " + className, e);
+        }
+    }
+
+    @SuppressWarnings("checkstyle:IllegalThrows")
+    private static class ForwardingNameServiceHandler implements InvocationHandler {
+        private final Object delegate;
+        private final Object fallback;
+
+        ForwardingNameServiceHandler(Object delegate, Object fallback) {
+            this.delegate = delegate;
+            this.fallback = fallback;
+        }
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            try {
+                return callAndUnwrap(delegate, method, args);
+            } catch (UnknownHostException e) {
+                if (fallback != null) {
+                    return callAndUnwrap(fallback, method, args);
+                }
+                throw e;
+            }
+        }
+
+        private static Object callAndUnwrap(Object obj, Method method, Object[] args) throws Throwable {
+            try {
+                Method delegateMethod = obj.getClass().getMethod(method.getName(), method.getParameterTypes());
+                delegateMethod.setAccessible(true);
+                return delegateMethod.invoke(obj, args);
+            } catch (InvocationTargetException e) {
+                throw e.getCause();
+            } catch (IllegalAccessException | IllegalArgumentException e) {
+                throw new IllegalStateException("Couldn't call method on underlying object", e);
+            }
+        }
     }
 }

@@ -106,6 +106,19 @@ public class DockerProxyRuleTest {
         }
     }
 
+    @Test
+    public void otherHostnamesStillResolve() throws IOException, InterruptedException {
+        DockerProxyRule dockerProxyRule = DockerProxyRule.fromProjectName(
+                DOCKER_COMPOSE_RULE.projectName(),
+                DockerProxyRuleTest.class);
+        try {
+            dockerProxyRule.before();
+            URLConnection urlConnection = new URL("http://www.palantir.com").openConnection();
+            urlConnection.connect();
+        } finally {
+            dockerProxyRule.after();
+        }
+    }
 
     @Test(expected = IllegalStateException.class)
     public void runningProxyRuleBeforeDockerComposeRuleFails() throws IOException, InterruptedException {

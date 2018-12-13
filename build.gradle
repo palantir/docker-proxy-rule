@@ -58,7 +58,6 @@ targetCompatibility = 1.8
 dependencies {
     compile group: 'com.palantir.docker.compose', name: 'docker-compose-rule-junit4'
     compile group: 'junit', name: 'junit'
-    compile group: 'net.amygdalum', name: 'xrayinterface'
     compile group: 'one.util', name: 'streamex'
 
     testCompile group: 'org.assertj', name: 'assertj-core'
