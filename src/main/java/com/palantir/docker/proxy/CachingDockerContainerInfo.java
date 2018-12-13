@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Palantir Technologies, Inc. All rights reserved.
+ * (c) Copyright 2017 Palantir Technologies Inc. All rights reserved.
  */
 
 package com.palantir.docker.proxy;
@@ -16,7 +16,8 @@ import java.util.concurrent.TimeUnit;
  * fails four times in a row, the entry will be removed and the next call will return
  * the exception to you if it happens again.
  */
-public class CachingDockerContainerInfo implements DockerContainerInfo {
+@SuppressWarnings("checkstyle:BanGuavaCaches")
+public final class CachingDockerContainerInfo implements DockerContainerInfo {
     private final DockerContainerInfo delegate;
     private final LoadingCache<String, Optional<String>> ipForHostCache;
     private final LoadingCache<String, Optional<String>> hostForIpCache;

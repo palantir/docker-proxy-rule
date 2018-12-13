@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Palantir Technologies, Inc. All rights reserved.
+ * (c) Copyright 2017 Palantir Technologies Inc. All rights reserved.
  */
 
 package com.palantir.docker.proxy;
@@ -9,7 +9,7 @@ import com.palantir.docker.compose.execution.DockerExecutable;
 import java.util.Optional;
 import one.util.streamex.StreamEx;
 
-public class ProjectBasedDockerContainerInfo implements DockerContainerInfo {
+public final class ProjectBasedDockerContainerInfo implements DockerContainerInfo {
     private final DockerExecutable docker;
     private final ProjectName projectName;
 

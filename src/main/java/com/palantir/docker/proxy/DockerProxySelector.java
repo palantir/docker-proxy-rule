@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Palantir Technologies, Inc. All rights reserved.
+ * (c) Copyright 2017 Palantir Technologies Inc. All rights reserved.
  */
 
 package com.palantir.docker.proxy;
@@ -15,7 +15,7 @@ import java.net.SocketAddress;
 import java.net.URI;
 import java.util.List;
 
-public class DockerProxySelector extends ProxySelector {
+public final class DockerProxySelector extends ProxySelector {
     public static final String PROXY_CONTAINER_NAME = "proxy";
     public static final short PROXY_CONTAINER_PORT = 1080;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Palantir Technologies, Inc. All rights reserved.
+ * (c) Copyright 2017 Palantir Technologies Inc. All rights reserved.
  */
 
 package com.palantir.docker.proxy;
@@ -8,7 +8,7 @@ import com.palantir.docker.compose.execution.DockerExecutable;
 import java.util.Optional;
 import one.util.streamex.StreamEx;
 
-public class NetworkBasedDockerContainerInfo implements DockerContainerInfo {
+public final class NetworkBasedDockerContainerInfo implements DockerContainerInfo {
     private final DockerExecutable docker;
     private final String networkName;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Palantir Technologies, Inc. All rights reserved.
+ * (c) Copyright 2017 Palantir Technologies Inc. All rights reserved.
  */
 
 package com.palantir.docker.proxy;
@@ -24,7 +24,7 @@ import java.util.function.Function;
 import net.amygdalum.xrayinterface.XRayInterface;
 import org.junit.rules.ExternalResource;
 
-public class DockerProxyRule extends ExternalResource {
+public final class DockerProxyRule extends ExternalResource {
     private final DockerContainerInfo dockerContainerInfo;
     private final DockerComposeRule dockerComposeRule;
 
@@ -74,6 +74,7 @@ public class DockerProxyRule extends ExternalResource {
     }
 
     @Override
+    @SuppressWarnings("PreferSafeLoggableExceptions")
     public void before() throws IOException, InterruptedException {
         try {
             originalProxySelector = ProxySelector.getDefault();

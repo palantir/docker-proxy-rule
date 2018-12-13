@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Palantir Technologies, Inc. All rights reserved.
+ * (c) Copyright 2017 Palantir Technologies Inc. All rights reserved.
  */
 
 package com.palantir.docker.proxy;
@@ -9,7 +9,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Optional;
 
-public class DockerNameService implements sun.net.spi.nameservice.NameService {
+public final class DockerNameService implements sun.net.spi.nameservice.NameService {
     private final DockerContainerInfo containerInfo;
 
     public DockerNameService(DockerContainerInfo containerInfo) {
