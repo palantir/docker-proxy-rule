@@ -1,1 +1,3 @@
 rootProject.name='docker-proxy-rule'
+
+enableFeaturePreview('IMPROVED_POM_SUPPORT')
