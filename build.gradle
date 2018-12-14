@@ -11,7 +11,6 @@ buildscript {
     }
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
-        classpath 'com.netflix.nebula:nebula-dependency-recommender:7.2.0'
         classpath 'com.netflix.nebula:nebula-publishing-plugin:9.4.1'
         classpath 'com.palantir.baseline:gradle-baseline-java:0.43.0'
         classpath 'com.palantir.gradle.gitversion:gradle-git-version:0.11.0'
@@ -34,13 +33,11 @@ apply plugin: 'com.palantir.git-version'
 group = 'com.palantir.docker.proxy'
 version gitVersion()
 
-apply plugin: 'com.palantir.configuration-resolver'
 
 apply plugin: 'java'
 apply plugin: 'org.inferred.processors'
 apply plugin: 'com.palantir.baseline'
 
-apply plugin: 'nebula.dependency-recommender'
 
 apply from: "${rootDir}/gradle/publish.gradle"
 
