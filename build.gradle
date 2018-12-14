@@ -10,14 +10,14 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
-        classpath 'com.netflix.nebula:nebula-dependency-recommender:3.6.3'
-        classpath 'com.netflix.nebula:nebula-publishing-plugin:4.9.1'
-        classpath 'com.palantir.gradle.gitversion:gradle-git-version:0.5.3'
-        classpath 'com.palantir:gradle-baseline-java:0.10.0'
-        classpath 'gradle.plugin.com.palantir.configurationresolver:gradle-configuration-resolver-plugin:0.1.0'
-        classpath 'gradle.plugin.org.inferred:gradle-processors:1.2.5'
-        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:4.0.0'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+        classpath 'com.netflix.nebula:nebula-dependency-recommender:7.2.0'
+        classpath 'com.netflix.nebula:nebula-publishing-plugin:9.4.1'
+        classpath 'com.palantir.baseline:gradle-baseline-java:0.43.0'
+        classpath 'com.palantir.gradle.gitversion:gradle-git-version:0.11.0'
+        classpath 'gradle.plugin.com.palantir.configurationresolver:gradle-configuration-resolver-plugin:0.2.0'
+        classpath 'gradle.plugin.org.inferred:gradle-processors:2.1.0'
+        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:4.8.1'
     }
 }
 
@@ -37,14 +37,10 @@ version gitVersion()
 apply plugin: 'com.palantir.configuration-resolver'
 
 apply plugin: 'java'
-apply plugin: 'com.palantir.baseline-config'
-apply plugin: 'com.palantir.baseline-checkstyle'
-apply plugin: 'com.palantir.baseline-eclipse'
-apply plugin: 'com.palantir.baseline-findbugs'
-apply plugin: 'com.palantir.baseline-idea'
+apply plugin: 'org.inferred.processors'
+apply plugin: 'com.palantir.baseline'
 
 apply plugin: 'nebula.dependency-recommender'
-apply plugin: 'org.inferred.processors'
 
 apply from: "${rootDir}/gradle/publish.gradle"
 
@@ -67,8 +63,6 @@ dependencies {
     compile group: 'junit', name: 'junit'
     compile group: 'net.amygdalum', name: 'xrayinterface'
     compile group: 'one.util', name: 'streamex'
-
-    processor group: 'org.immutables', name: 'value'
 
     testCompile group: 'org.assertj', name: 'assertj-core'
     testCompile group: 'org.mockito', name: 'mockito-core'

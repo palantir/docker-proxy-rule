@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Palantir Technologies, Inc. All rights reserved.
+ * (c) Copyright 2017 Palantir Technologies Inc. All rights reserved.
  */
 
 package com.palantir.docker.proxy;
@@ -25,12 +25,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import one.util.streamex.StreamEx;
 
-public class DockerContainerInfoUtils {
-    private static final List<String> DOCKER_NAME_TAGS = ImmutableList.of(
+public final class DockerContainerInfoUtils {
+    private static final ImmutableList<String> DOCKER_NAME_TAGS = ImmutableList.of(
             "{{ .Name }}",
             "{{ .Config.Hostname }}",
             "{{ .Config.Hostname }}.{{ .Config.Domainname }}");
-    private static final List<String> DOCKER_NAME_LABELS = ImmutableList.of(
+    private static final ImmutableList<String> DOCKER_NAME_LABELS = ImmutableList.of(
             "com.docker.compose.service",
             "hostname");
 
@@ -70,7 +70,7 @@ public class DockerContainerInfoUtils {
                 return Optional.empty();
             }
 
-            Preconditions.checkState(InetAddresses.isInetAddress(ip), "IP address is not valid: " + ip);
+            Preconditions.checkState(InetAddresses.isInetAddress(ip), "IP address is not valid: %s", ip);
             return Optional.of(ip);
         } catch (InterruptedException | IOException | RuntimeException e) {
             throw new IllegalStateException("Couldn't get IP for container ID " + containerId, e);
