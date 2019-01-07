@@ -30,7 +30,7 @@ dependencies {
 }
 ```
 
-For the most basic use (with [docker-compose-rule](palantir/docker-compose-rule)), simply add an `@ClassRule` as follows:
+For the most basic use (with [docker-compose-rule](https://github.com/palantir/docker-compose-rule)), simply add an `@ClassRule` as follows:
 
 ```java
 public class MyIntegrationTest {
