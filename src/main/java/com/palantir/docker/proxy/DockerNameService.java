@@ -9,14 +9,13 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Optional;
 
-public final class DockerNameService implements sun.net.spi.nameservice.NameService {
+public final class DockerNameService {
     private final DockerContainerInfo containerInfo;
 
     public DockerNameService(DockerContainerInfo containerInfo) {
         this.containerInfo = containerInfo;
     }
 
-    @Override
     public InetAddress[] lookupAllHostAddr(String hostname) throws UnknownHostException {
         Optional<String> containerIp = containerInfo.getIpForHost(hostname);
 
@@ -26,7 +25,6 @@ public final class DockerNameService implements sun.net.spi.nameservice.NameServ
         throw new UnknownHostException(hostname);
     }
 
-    @Override
     public String getHostByAddr(byte[] bytes) throws UnknownHostException {
         String ipAddress = InetAddress.getByAddress(bytes).getHostAddress();
         Optional<String> containerHost = containerInfo.getHostForIp(ipAddress);
