@@ -18,7 +18,13 @@ jobs:
       - restore_cache: { key: 'gradle-cache-{{ checksum "versions.props" }}-{{ checksum "build.gradle" }}' }
       - setup_remote_docker:
           docker_layer_caching: true
-      - run: ./gradlew --no-daemon --parallel --stacktrace  --continue --max-workers=8 --profile build
+      - run:
+          name: Make remote docker appear as local docker
+          command: sudo ssh -f -o "ExitOnForwardFailure yes" -F $HOME/.ssh/config -4N -L /var/run/docker.sock:/var/run/docker.sock $(for port in 2376 $(seq 32768 32999); do echo "-L ${port}:127.0.0.1:${port}"; done) remote-docker
+      - run:
+          name: Allow all users to access local docker
+          command: sudo chmod a+rw /var/run/docker.sock
+      - run: unset DOCKER_CERT_PATH DOCKER_HOST DOCKER_TLS_VERIFY && ./gradlew --no-daemon --parallel --stacktrace  --continue --max-workers=8 --profile build
       - save_cache:
           key: 'gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}'
           paths: [ ~/.gradle/wrapper ]
@@ -55,7 +61,13 @@ jobs:
       - restore_cache: { key: 'gradle-cache-{{ checksum "versions.props" }}-{{ checksum "build.gradle" }}' }
       - setup_remote_docker:
           docker_layer_caching: true
-      - run: ./gradlew --no-daemon --parallel --stacktrace  --continue --profile build
+      - run:
+          name: Make remote docker appear as local docker
+          command: sudo ssh -f -o "ExitOnForwardFailure yes" -F $HOME/.ssh/config -4N -L /var/run/docker.sock:/var/run/docker.sock $(for port in 2376 $(seq 32768 32999); do echo "-L ${port}:127.0.0.1:${port}"; done) remote-docker
+      - run:
+          name: Allow all users to access local docker
+          command: sudo chmod a+rw /var/run/docker.sock
+      - run: unset DOCKER_CERT_PATH DOCKER_HOST DOCKER_TLS_VERIFY && ./gradlew --no-daemon --parallel --stacktrace  --continue --profile build
       - save_cache:
           key: 'gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}'
           paths: [ ~/.gradle/wrapper ]
