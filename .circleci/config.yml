@@ -10,8 +10,7 @@
 version: 2
 jobs:
   build:
-    docker: [{ image: 'circleci/openjdk:8u171-node' }]
-    resource_class: xlarge
+    machine: { docker_layer_caching: true }
     environment:
       GRADLE_OPTS: -Dorg.gradle.console=plain -Dorg.gradle.internal.launcher.welcomeMessageEnabled=false
       CIRCLE_TEST_REPORTS: /home/circleci/junit
@@ -21,15 +20,7 @@ jobs:
       - checkout
       - restore_cache: { key: 'gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}' }
       - restore_cache: { key: 'gradle-cache-{{ checksum "versions.props" }}-{{ checksum "build.gradle" }}' }
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Make remote docker appear as local docker
-          command: sudo ssh -f -o "ExitOnForwardFailure yes" -F $HOME/.ssh/config -4N -L /var/run/docker.sock:/var/run/docker.sock $(for port in 2376 $(seq 32768 32999); do echo "-L ${port}:127.0.0.1:${port}"; done) remote-docker
-      - run:
-          name: Allow all users to access local docker
-          command: sudo chmod a+rw /var/run/docker.sock
-      - run: unset DOCKER_CERT_PATH DOCKER_HOST DOCKER_TLS_VERIFY && ./gradlew --no-daemon --parallel --stacktrace  --continue --max-workers=8 --profile build
+      - run: ./gradlew --no-daemon --parallel --stacktrace  --continue --max-workers=8 --profile build
       - save_cache:
           key: 'gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}'
           paths: [ ~/.gradle/wrapper ]
@@ -53,8 +44,7 @@ jobs:
       - store_artifacts: { path: ~/artifacts }
 
   build-11:
-    docker: [{ image: 'circleci/openjdk:11-node' }]
-    resource_class: xlarge
+    machine: { docker_layer_caching: true }
     environment:
       GRADLE_OPTS: -Dorg.gradle.console=plain -Dorg.gradle.internal.launcher.welcomeMessageEnabled=false
       CIRCLE_TEST_REPORTS: /home/circleci/junit
@@ -64,15 +54,12 @@ jobs:
       - checkout
       - restore_cache: { key: 'gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}' }
       - restore_cache: { key: 'gradle-cache-{{ checksum "versions.props" }}-{{ checksum "build.gradle" }}' }
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Make remote docker appear as local docker
-          command: sudo ssh -f -o "ExitOnForwardFailure yes" -F $HOME/.ssh/config -4N -L /var/run/docker.sock:/var/run/docker.sock $(for port in 2376 $(seq 32768 32999); do echo "-L ${port}:127.0.0.1:${port}"; done) remote-docker
-      - run:
-          name: Allow all users to access local docker
-          command: sudo chmod a+rw /var/run/docker.sock
-      - run: unset DOCKER_CERT_PATH DOCKER_HOST DOCKER_TLS_VERIFY && ./gradlew --no-daemon --parallel --stacktrace  --continue --profile build
+      - run: |
+          sudo mkdir -p /opt/jdk/11.0.1
+          curl -sS https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_linux-x64_bin.tar.gz | sudo tar xz --strip-components 1 -C /opt/jdk/11.0.1
+          echo 'export PATH=/opt/jdk/11.0.1/bin:$PATH' >> "$BASH_ENV"
+          echo 'export JAVA_HOME=/opt/jdk/11.0.1' >> "$BASH_ENV"
+      - run: ./gradlew --no-daemon --parallel --stacktrace  --continue --profile build
       - save_cache:
           key: 'gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}'
           paths: [ ~/.gradle/wrapper ]
