@@ -1,8 +1,8 @@
 com.palantir.docker.compose:docker-compose-rule-junit4 = 0.35.0
 junit:junit = 4.12
 one.util:streamex = 0.6.8
-org.assertj:assertj-core = 3.12.1
-org.mockito:mockito-core = 2.24.5
+org.assertj:assertj-core = 3.12.2
+org.mockito:mockito-core = 2.27.0
 
 # Conflicts
 com.google.code.findbugs:jsr305 = 3.0.2
