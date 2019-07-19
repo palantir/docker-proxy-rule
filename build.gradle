@@ -10,6 +10,7 @@ buildscript {
         }
     }
     dependencies {
+        classpath 'com.palantir.gradle.consistentversions:gradle-consistent-versions:1.9.2'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
         classpath 'com.netflix.nebula:nebula-publishing-plugin:9.4.1'
         classpath 'com.palantir.baseline:gradle-baseline-java:0.50.0'
@@ -28,6 +29,7 @@ repositories {
     }
 }
 
+apply plugin: 'com.palantir.consistent-versions'
 apply plugin: 'com.palantir.git-version'
 
 group = 'com.palantir.docker.proxy'
@@ -41,16 +43,6 @@ apply plugin: 'com.palantir.baseline'
 
 apply from: "${rootDir}/gradle/publish.gradle"
 
-dependencyRecommendations {
-    strategy OverrideTransitives
-    propertiesFile file: project.rootProject.file('versions.props')
-}
-
-configurations.all {
-    resolutionStrategy {
-        failOnVersionConflict()
-    }
-}
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8

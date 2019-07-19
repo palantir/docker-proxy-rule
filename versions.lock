@@ -1,0 +1,23 @@
+# Run ./gradlew --write-locks to regenerate this file
+cglib:cglib-nodep:3.1 (1 constraints: 2a0e1330)
+com.github.zafarkhaja:java-semver:0.9.0 (1 constraints: c315c0d2)
+com.google.guava:guava:18.0 (2 constraints: de2b96e3)
+com.jayway.awaitility:awaitility:1.6.5 (1 constraints: c615c1d2)
+com.palantir.docker.compose:docker-compose-rule-core:0.35.0 (1 constraints: a7167319)
+com.palantir.docker.compose:docker-compose-rule-junit4:0.35.0 (1 constraints: 3a053a3b)
+commons-io:commons-io:2.4 (1 constraints: 62156ba7)
+joda-time:joda-time:2.9.1 (2 constraints: 402c7d31)
+junit:junit:4.12 (2 constraints: 221b384a)
+one.util:streamex:0.6.8 (1 constraints: 10050536)
+org.apache.commons:commons-lang3:3.0 (1 constraints: 5f156aa7)
+org.hamcrest:hamcrest-all:1.3 (1 constraints: 601567a7)
+org.hamcrest:hamcrest-core:1.3 (4 constraints: 1136abaa)
+org.hamcrest:hamcrest-library:1.3 (1 constraints: 2a0e0f30)
+org.objenesis:objenesis:2.6 (2 constraints: dc181aa4)
+org.slf4j:slf4j-api:1.7.12 (2 constraints: 9e2c8b7f)
+
+[Test dependencies]
+net.bytebuddy:byte-buddy:1.9.7 (1 constraints: 1b0b13d3)
+net.bytebuddy:byte-buddy-agent:1.9.7 (1 constraints: 1b0b13d3)
+org.assertj:assertj-core:3.12.1 (1 constraints: 39053c3b)
+org.mockito:mockito-core:2.24.5 (1 constraints: 3f05443b)
