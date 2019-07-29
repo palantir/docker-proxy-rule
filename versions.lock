@@ -33,5 +33,5 @@ org.slf4j:slf4j-api:1.7.25 (3 constraints: b33afeec)
 [Test dependencies]
 net.bytebuddy:byte-buddy:1.9.10 (1 constraints: 450b52de)
 net.bytebuddy:byte-buddy-agent:1.9.10 (1 constraints: 450b52de)
-org.assertj:assertj-core:3.12.2 (1 constraints: 3a053d3b)
+org.assertj:assertj-core:3.13.1 (1 constraints: 3a053f3b)
 org.mockito:mockito-core:3.0.0 (1 constraints: 0505fa35)
