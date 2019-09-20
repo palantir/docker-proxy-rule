@@ -42,7 +42,9 @@ public final class DockerProxySelector extends ProxySelector {
 
     @Override
     public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
-        com.palantir.logsafe.Preconditions.checkArgument(uri != null && sa != null && ioe != null, "Invalid connectFailed call");
+        com.palantir.logsafe.Preconditions.checkArgument(
+            uri != null && sa != null && ioe != null, 
+            "Invalid connectFailed call");
         delegate.connectFailed(uri, sa, ioe);
     }
 }
