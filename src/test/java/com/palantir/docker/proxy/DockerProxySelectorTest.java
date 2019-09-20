@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
+import com.google.common.net.InetAddresses;
 import com.palantir.docker.compose.connection.Cluster;
 import com.palantir.docker.compose.connection.Container;
 import com.palantir.docker.compose.connection.ContainerCache;
@@ -31,8 +32,8 @@ import org.junit.Test;
 public class DockerProxySelectorTest {
     private static final String CLUSTER_IP = "172.17.0.1";
     private static final int PROXY_EXTERNAL_PORT = 12345;
-    private static final InetSocketAddress PROXY_ADDRESS = InetSocketAddress
-            .createUnresolved(CLUSTER_IP, PROXY_EXTERNAL_PORT);
+    private static final InetSocketAddress PROXY_ADDRESS =
+            new InetSocketAddress(InetAddresses.forString(CLUSTER_IP), PROXY_EXTERNAL_PORT);
 
     private static final String TEST_IP = "172.17.0.5";
     private static final String TEST_HOSTNAME = "some-address";
