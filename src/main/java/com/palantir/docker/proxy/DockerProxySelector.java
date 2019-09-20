@@ -6,6 +6,7 @@ package com.palantir.docker.proxy;
 
 import com.google.common.collect.ImmutableList;
 import com.palantir.docker.compose.connection.Cluster;
+import com.palantir.logsafe.Preconditions;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -44,9 +45,7 @@ public final class DockerProxySelector extends ProxySelector {
 
     @Override
     public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
-        com.palantir.logsafe.Preconditions.checkArgument(
-                uri != null && sa != null && ioe != null,
-                "Invalid connectFailed call");
+        Preconditions.checkArgument(uri != null && sa != null && ioe != null, "Invalid connectFailed call");
         delegate.connectFailed(uri, sa, ioe);
     }
 }
