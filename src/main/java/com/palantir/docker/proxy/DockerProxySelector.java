@@ -24,9 +24,8 @@ public final class DockerProxySelector extends ProxySelector {
     private final ProxySelector delegate;
 
     public DockerProxySelector(Cluster containers, DockerContainerInfo containerInfo, ProxySelector delegate) {
-        // ip's don't need resolution, yet without using the {@code InetSocketAddress} constructor, calling
-        // {@code InetSocketAddress#getAddress} returns {@code null} making the proxy unusable in certain downstream
-        // libraries.
+        // We can't call InetSocketAddress.createUnresolved here as some downstream libraries cannot deal with
+        // getAddress returning null.
         this.proxyAddress = new InetSocketAddress(
                 containers.ip(),
                 containers.container(PROXY_CONTAINER_NAME).port(PROXY_CONTAINER_PORT).getExternalPort());
