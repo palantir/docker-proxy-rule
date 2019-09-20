@@ -4,9 +4,9 @@
 
 package com.palantir.docker.proxy;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.palantir.docker.compose.connection.Cluster;
+import com.palantir.logsafe.Preconditions;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
