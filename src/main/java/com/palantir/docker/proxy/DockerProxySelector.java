@@ -24,7 +24,7 @@ public final class DockerProxySelector extends ProxySelector {
     private final ProxySelector delegate;
 
     public DockerProxySelector(Cluster containers, DockerContainerInfo containerInfo, ProxySelector delegate) {
-        this.proxyAddress = InetSocketAddress.createUnresolved(
+        this.proxyAddress = new InetSocketAddress(
                 containers.ip(),
                 containers.container(PROXY_CONTAINER_NAME).port(PROXY_CONTAINER_PORT).getExternalPort());
         this.containerInfo = containerInfo;
