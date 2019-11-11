@@ -1,5 +1,17 @@
 /*
- * (c) Copyright 2017 Palantir Technologies Inc. All rights reserved.
+ * (c) Copyright 2019 Palantir Technologies Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.palantir.docker.proxy;
@@ -7,8 +19,7 @@ package com.palantir.docker.proxy;
 import com.google.common.base.Throwables;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
-import com.palantir.docker.compose.DockerComposeRule;
-import com.palantir.docker.compose.configuration.ProjectName;
+import com.palantir.docker.compose.DockerComposeManager;
 import com.palantir.docker.compose.connection.Container;
 import com.palantir.docker.compose.connection.DockerMachine;
 import com.palantir.docker.compose.execution.DockerExecutable;
@@ -27,60 +38,42 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Function;
-import org.junit.rules.ExternalResource;
+import java.util.function.UnaryOperator;
 
 @SuppressWarnings("PreferSafeLoggableExceptions")
-public final class DockerProxyRule extends ExternalResource {
+abstract class DockerProxyManager<SelfT extends DockerComposeManager.BuilderExtensions<SelfT>> {
     private final DockerContainerInfo dockerContainerInfo;
-    private final DockerComposeRule dockerComposeRule;
+    private final DockerComposeManager dockerComposeRule;
 
     private ProxySelector originalProxySelector;
     private Object originalNameService;
 
     /**
-     * Creates a {@link DockerProxyRule} which will create a proxy and DNS so that
+     * Creates a {@link DockerProxyManager} which will create a proxy and DNS so that
      * tests can interface with docker containers directly.
      *
      * @param dockerContainerInfoCreator A {@link Function} that creates the DockerContainerInfo to use
-     * @param classToLogFor The class using {@link DockerProxyRule}
+     * @param classToLogFor The class using {@link DockerProxyManager}
      */
-    public DockerProxyRule(
+    DockerProxyManager(
+            Customizer<SelfT> builderSupplier,
             Function<DockerExecutable, DockerContainerInfo> dockerContainerInfoCreator,
             Class<?> classToLogFor) {
         DockerContainerInfo builtDockerContainerInfo = dockerContainerInfoCreator.apply(DockerExecutable.builder()
                 .dockerConfiguration(DockerMachine.localMachine().build())
                 .build());
-        String logDirectory = DockerProxyRule.class.getSimpleName() + "-" + classToLogFor.getSimpleName();
+        String logDirectory = DockerProxyManager.class.getSimpleName() + "-" + classToLogFor.getSimpleName();
         this.dockerContainerInfo = new CachingDockerContainerInfo(builtDockerContainerInfo);
-        this.dockerComposeRule = DockerComposeRule.builder()
+        this.dockerComposeRule = builderSupplier.customize(builder -> builder
                 .file(getDockerComposeFile(this.dockerContainerInfo.getNetworkName()).getPath())
                 .waitingForService("proxy", Container::areAllPortsOpen)
-                .saveLogsTo(LogDirectory.circleAwareLogDirectory(logDirectory))
-                .retryAttempts(0)
-                .build();
+                .saveLogsTo(LogDirectory.circleAwareLogDirectory(logDirectory)));
     }
 
-    /**
-     * Creates a {@link DockerProxyRule} using a {@link ProjectBasedDockerContainerInfo}.
-     *
-     * @param projectName The docker-compose-rule ProjectName to use to find the containers
-     * @param classToLogFor The class using {@link DockerProxyRule}
-     */
-    public static DockerProxyRule fromProjectName(ProjectName projectName, Class<?> classToLogFor) {
-        return new DockerProxyRule(docker -> new ProjectBasedDockerContainerInfo(docker, projectName), classToLogFor);
+    public interface Customizer<T> {
+        DockerComposeManager customize(UnaryOperator<T> customizeFunction);
     }
 
-    /**
-     * Creates a {@link DockerProxyRule} using a {@link NetworkBasedDockerContainerInfo}.
-     *
-     * @param networkName The network name to use to find the containers
-     * @param classToLogFor The class using {@link DockerProxyRule}
-     */
-    public static DockerProxyRule fromNetworkName(String networkName, Class<?> classToLogFor) {
-        return new DockerProxyRule(docker -> new NetworkBasedDockerContainerInfo(docker, networkName), classToLogFor);
-    }
-
-    @Override
     public void before() throws IOException, InterruptedException {
         try {
             originalProxySelector = ProxySelector.getDefault();
@@ -100,7 +93,6 @@ public final class DockerProxyRule extends ExternalResource {
         }
     }
 
-    @Override
     public void after() {
         ProxySelector.setDefault(originalProxySelector);
         unsetNameService();

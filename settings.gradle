@@ -1,2 +1,4 @@
-rootProject.name='docker-proxy-rule'
+rootProject.name='palantir-docker-proxy-rule'
 
+include ':docker-proxy-rule-core'
+include ':docker-proxy-rule-junit4'

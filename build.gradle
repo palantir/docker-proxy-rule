@@ -17,44 +17,37 @@ buildscript {
         classpath 'com.netflix.nebula:nebula-publishing-plugin:13.6.1'
         classpath 'com.palantir.gradle.gitversion:gradle-git-version:0.12.2'
         classpath 'gradle.plugin.org.inferred:gradle-processors:3.1.0'
-    }
-}
-
-repositories {
-    mavenCentral()
-    jcenter()
-    maven {
-        url "https://dl.bintray.com/palantir/releases"
+        classpath "org.unbroken-dome.gradle-plugins:gradle-testsets-plugin:2.2.1"
     }
 }
 
 apply plugin: 'com.palantir.consistent-versions'
 apply plugin: 'com.palantir.git-version'
-
-group = 'com.palantir.docker.proxy'
-version gitVersion()
-
-
-apply plugin: 'java'
-apply plugin: 'org.inferred.processors'
 apply plugin: 'com.palantir.baseline'
 
+allprojects {
+    group = 'com.palantir.docker.proxy'
+    version gitVersion()
 
-apply from: "${rootDir}/gradle/publish-jar.gradle"
-
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-dependencies {
-    compile group: 'com.palantir.docker.compose', name: 'docker-compose-rule-junit4'
-    compile group: 'junit', name: 'junit'
-    compile group: 'one.util', name: 'streamex'
-
-    testCompile group: 'org.assertj', name: 'assertj-core'
-    testCompile group: 'org.mockito', name: 'mockito-core'
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven {
+            url "https://dl.bintray.com/palantir/releases"
+        }
+    }
 }
 
-if (System.env.CIRCLE_TEST_REPORTS) {
-    test.reports.junitXml.destination = file(System.env.CIRCLE_TEST_REPORTS)
+configure(subprojects) {
+    apply plugin: 'java-library'
+    apply plugin: 'org.inferred.processors'
+
+    tasks.check.dependsOn(javadoc)
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    if (System.env.CIRCLE_TEST_REPORTS) {
+        test.reports.junitXml.destination = new File(System.env.CIRCLE_TEST_REPORTS, it.getName())
+    }
 }
