@@ -42,8 +42,6 @@ configure(subprojects) {
     apply plugin: 'java-library'
     apply plugin: 'org.inferred.processors'
 
-    tasks.check.dependsOn(javadoc)
-
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
