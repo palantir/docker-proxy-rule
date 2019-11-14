@@ -1,0 +1,6 @@
+version: '2'
+
+services:
+  webserver:
+    hostname: web.server.here
+    image: 1science/nginx

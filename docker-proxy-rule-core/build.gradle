@@ -1,0 +1,10 @@
+apply from: "${rootDir}/gradle/publish-jar.gradle"
+
+dependencies {
+    api group: 'com.palantir.docker.compose', name: 'docker-compose-rule-core'
+    implementation group: 'one.util', name: 'streamex'
+
+    testImplementation group: 'junit', name: 'junit'
+    testImplementation group: 'org.assertj', name: 'assertj-core'
+    testImplementation group: 'org.mockito', name: 'mockito-core'
+}

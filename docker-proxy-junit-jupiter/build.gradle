@@ -1,0 +1,17 @@
+apply from: "${rootDir}/gradle/publish-jar.gradle"
+apply plugin: 'org.unbroken-dome.test-sets'
+
+testSets {
+    integrationTest
+}
+
+build.dependsOn integrationTest
+
+dependencies {
+    api project(":docker-proxy-rule-core")
+    api group: 'com.palantir.docker.compose', name: 'docker-compose-junit-jupiter'
+
+    testImplementation group: 'org.assertj', name: 'assertj-core'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter'
+    testImplementation group: 'org.mockito', name: 'mockito-core'
+}

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2017 Palantir Technologies Inc. All rights reserved.
+ * (c) Copyright 2019 Palantir Technologies Inc. All rights reserved.
  */
 package com.palantir.docker.proxy;
 
@@ -15,7 +15,7 @@ import org.junit.Test;
 public class DockerProxyRuleTest {
     @ClassRule
     public static final DockerComposeRule DOCKER_COMPOSE_RULE = DockerComposeRule.builder()
-            .file("src/test/resources/DockerProxyRuleTest-services.yml")
+            .file("src/integrationTest/resources/DockerProxyRuleTest-services.yml")
             .saveLogsTo(LogDirectory.circleAwareLogDirectory(DockerProxyRuleTest.class))
             .waitingForService("webserver", Container::areAllPortsOpen)
             .build();
