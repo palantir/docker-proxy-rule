@@ -32,7 +32,7 @@ public final class DockerNameService {
         Optional<String> containerIp = containerInfo.getIpForHost(hostname);
 
         if (containerIp.isPresent()) {
-            return new InetAddress[] { InetAddresses.forString(containerIp.get()) };
+            return new InetAddress[] {InetAddresses.forString(containerIp.get())};
         }
         throw new UnknownHostException(hostname);
     }

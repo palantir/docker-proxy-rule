@@ -39,12 +39,9 @@ import one.util.streamex.StreamEx;
 
 public final class DockerContainerInfoUtils {
     private static final ImmutableList<String> DOCKER_NAME_TAGS = ImmutableList.of(
-            "{{ .Name }}",
-            "{{ .Config.Hostname }}",
-            "{{ .Config.Hostname }}.{{ .Config.Domainname }}");
-    private static final ImmutableList<String> DOCKER_NAME_LABELS = ImmutableList.of(
-            "com.docker.compose.service",
-            "hostname");
+            "{{ .Name }}", "{{ .Config.Hostname }}", "{{ .Config.Hostname }}.{{ .Config.Domainname }}");
+    private static final ImmutableList<String> DOCKER_NAME_LABELS =
+            ImmutableList.of("com.docker.compose.service", "hostname");
 
     @VisibleForTesting
     static final String IP_FORMAT_STRING = "{{ range .NetworkSettings.Networks }}{{ .IPAddress }}{{ end }}";
@@ -59,14 +56,9 @@ public final class DockerContainerInfoUtils {
                     .map(label -> String.format("{{ index .Config.Labels \"%s\" }}", label))
                     .append(DOCKER_NAME_TAGS)
                     .collect(Collectors.joining(","));
-            String labelsString = Iterables.getOnlyElement(runDockerProcess(
-                    docker,
-                    "inspect",
-                    "--format", labelsFormat,
-                    containerId));
-            return Splitter.on(CharMatcher.anyOf(",/"))
-                    .omitEmptyStrings()
-                    .splitToList(labelsString);
+            String labelsString = Iterables.getOnlyElement(
+                    runDockerProcess(docker, "inspect", "--format", labelsFormat, containerId));
+            return Splitter.on(CharMatcher.anyOf(",/")).omitEmptyStrings().splitToList(labelsString);
         } catch (IOException | InterruptedException e) {
             throw Throwables.propagate(e);
         }
@@ -95,30 +87,28 @@ public final class DockerContainerInfoUtils {
                     docker,
                     "network",
                     "inspect",
-                    "--format", "{{ range $container, $_ := .Containers }}{{ $container }},{{ end }}",
+                    "--format",
+                    "{{ range $container, $_ := .Containers }}{{ $container }},{{ end }}",
                     networkName));
 
-            return Splitter.on(',')
-                    .omitEmptyStrings()
-                    .splitToList(containersOnNetworkString);
+            return Splitter.on(',').omitEmptyStrings().splitToList(containersOnNetworkString);
         } catch (InterruptedException | IOException | RuntimeException e) {
             throw new IllegalStateException("Unable to find the container IDs on the network " + networkName, e);
         }
     }
 
-    public static List<String> getContainerIdsInDockerComposeProject(
-            DockerExecutable docker,
-            ProjectName projectName) {
+    public static List<String> getContainerIdsInDockerComposeProject(DockerExecutable docker, ProjectName projectName) {
         try {
             return DockerContainerInfoUtils.runDockerProcess(
                     docker,
                     "ps",
-                    "--filter", "label=com.docker.compose.project=" + projectName.asString(),
-                    "--format", "{{ .ID }}");
+                    "--filter",
+                    "label=com.docker.compose.project=" + projectName.asString(),
+                    "--format",
+                    "{{ .ID }}");
         } catch (IOException | InterruptedException | RuntimeException e) {
             throw new IllegalStateException(
-                    "Unable to get container IDs in the docker compose project " + projectName.asString(),
-                    e);
+                    "Unable to get container IDs in the docker compose project " + projectName.asString(), e);
         }
     }
 

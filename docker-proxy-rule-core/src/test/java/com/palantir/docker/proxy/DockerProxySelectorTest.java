@@ -54,10 +54,8 @@ public class DockerProxySelectorTest {
 
     private final DockerContainerInfo containerInfo = mock(DockerContainerInfo.class);
     private final ProxySelector originalProxySelector = mock(ProxySelector.class);
-    private final ProxySelector dockerProxySelector = new DockerProxySelector(
-            setupProxyContainer(),
-            containerInfo,
-            originalProxySelector);
+    private final ProxySelector dockerProxySelector =
+            new DockerProxySelector(setupProxyContainer(), containerInfo, originalProxySelector);
 
     @Before
     public void originalProxySelectorIsNoProxy() {
@@ -96,43 +94,28 @@ public class DockerProxySelectorTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void connectionFailedShouldThrowOnNullUri() {
-        dockerProxySelector.connectFailed(
-                null,
-                PROXY_ADDRESS,
-                new IOException());
+        dockerProxySelector.connectFailed(null, PROXY_ADDRESS, new IOException());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void connectionFailedShouldThrowOnNullAddress() {
-        dockerProxySelector.connectFailed(
-                TEST_HOSTNAME_URI,
-                null,
-                new IOException());
+        dockerProxySelector.connectFailed(TEST_HOSTNAME_URI, null, new IOException());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void connectionFailedShouldThrowOnNullException() {
-        dockerProxySelector.connectFailed(
-                TEST_HOSTNAME_URI,
-                PROXY_ADDRESS,
-                null);
+        dockerProxySelector.connectFailed(TEST_HOSTNAME_URI, PROXY_ADDRESS, null);
     }
 
     @Test
     public void connectionFailedShouldNotThrowOnValidArguments() {
-        dockerProxySelector.connectFailed(
-                TEST_HOSTNAME_URI,
-                PROXY_ADDRESS,
-                new IOException());
+        dockerProxySelector.connectFailed(TEST_HOSTNAME_URI, PROXY_ADDRESS, new IOException());
     }
 
     @Test
     public void connectionFailedShouldDelegateToPassedInSelector() {
         IOException exception = new IOException();
-        dockerProxySelector.connectFailed(
-                TEST_HOSTNAME_URI,
-                PROXY_ADDRESS,
-                exception);
+        dockerProxySelector.connectFailed(TEST_HOSTNAME_URI, PROXY_ADDRESS, exception);
 
         verify(originalProxySelector, times(1)).connectFailed(TEST_HOSTNAME_URI, PROXY_ADDRESS, exception);
     }
@@ -143,8 +126,7 @@ public class DockerProxySelectorTest {
                 .thenReturn(new DockerPort(CLUSTER_IP, PROXY_EXTERNAL_PORT, DockerProxySelector.PROXY_CONTAINER_PORT));
 
         ContainerCache containerCache = mock(ContainerCache.class);
-        when(containerCache.container(DockerProxySelector.PROXY_CONTAINER_NAME))
-                .thenReturn(proxyContainer);
+        when(containerCache.container(DockerProxySelector.PROXY_CONTAINER_NAME)).thenReturn(proxyContainer);
 
         return ImmutableCluster.builder()
                 .ip(CLUSTER_IP)

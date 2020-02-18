@@ -40,7 +40,10 @@ public final class DockerProxySelector extends ProxySelector {
         // getAddress returning null.
         this.proxyAddress = new InetSocketAddress(
                 containers.ip(),
-                containers.container(PROXY_CONTAINER_NAME).port(PROXY_CONTAINER_PORT).getExternalPort());
+                containers
+                        .container(PROXY_CONTAINER_NAME)
+                        .port(PROXY_CONTAINER_PORT)
+                        .getExternalPort());
         this.containerInfo = containerInfo;
         this.delegate = delegate;
     }
@@ -48,7 +51,8 @@ public final class DockerProxySelector extends ProxySelector {
     @Override
     public List<Proxy> select(URI uri) {
         String host = uri.getHost();
-        if (containerInfo.getIpForHost(host).isPresent() || containerInfo.getHostForIp(host).isPresent()) {
+        if (containerInfo.getIpForHost(host).isPresent()
+                || containerInfo.getHostForIp(host).isPresent()) {
             return ImmutableList.of(new Proxy(Proxy.Type.SOCKS, proxyAddress));
         } else {
             return delegate.select(uri);

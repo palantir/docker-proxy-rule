@@ -34,9 +34,8 @@ public class DockerProxyRuleTest {
 
     @Test
     public void canReachDockerContainerByContainerNameWithProjectSpecified() throws IOException, InterruptedException {
-        DockerProxyRule dockerProxyRule = DockerProxyRule.fromProjectName(
-                DOCKER_COMPOSE_RULE.projectName(),
-                DockerProxyRuleTest.class);
+        DockerProxyRule dockerProxyRule =
+                DockerProxyRule.fromProjectName(DOCKER_COMPOSE_RULE.projectName(), DockerProxyRuleTest.class);
         try {
             dockerProxyRule.before();
             URLConnection urlConnection = new URL("http://webserver").openConnection();
@@ -48,9 +47,8 @@ public class DockerProxyRuleTest {
 
     @Test
     public void canReachDockerContainerByHostnameWithProjectSpecified() throws IOException, InterruptedException {
-        DockerProxyRule dockerProxyRule = DockerProxyRule.fromProjectName(
-                DOCKER_COMPOSE_RULE.projectName(),
-                DockerProxyRuleTest.class);
+        DockerProxyRule dockerProxyRule =
+                DockerProxyRule.fromProjectName(DOCKER_COMPOSE_RULE.projectName(), DockerProxyRuleTest.class);
         try {
             dockerProxyRule.before();
             URLConnection urlConnection = new URL("http://web").openConnection();
@@ -63,9 +61,8 @@ public class DockerProxyRuleTest {
     @Test
     public void canReachDockerContainerByHostnameAndDomainNameWithProjectSpecified()
             throws IOException, InterruptedException {
-        DockerProxyRule dockerProxyRule = DockerProxyRule.fromProjectName(
-                DOCKER_COMPOSE_RULE.projectName(),
-                DockerProxyRuleTest.class);
+        DockerProxyRule dockerProxyRule =
+                DockerProxyRule.fromProjectName(DOCKER_COMPOSE_RULE.projectName(), DockerProxyRuleTest.class);
         try {
             dockerProxyRule.before();
             URLConnection urlConnection = new URL("http://web.server.here").openConnection();
@@ -78,8 +75,7 @@ public class DockerProxyRuleTest {
     @Test
     public void canReachDockerContainerByContainerNameWithNetworkSpecified() throws IOException, InterruptedException {
         DockerProxyRule dockerProxyRule = DockerProxyRule.fromNetworkName(
-                DOCKER_COMPOSE_RULE.projectName().asString() + "_default",
-                DockerProxyRuleTest.class);
+                DOCKER_COMPOSE_RULE.projectName().asString() + "_default", DockerProxyRuleTest.class);
         try {
             dockerProxyRule.before();
             URLConnection urlConnection = new URL("http://webserver").openConnection();
@@ -92,8 +88,7 @@ public class DockerProxyRuleTest {
     @Test
     public void canReachDockerContainerByHostnameWithNetworkSpecified() throws IOException, InterruptedException {
         DockerProxyRule dockerProxyRule = DockerProxyRule.fromNetworkName(
-                DOCKER_COMPOSE_RULE.projectName().asString() + "_default",
-                DockerProxyRuleTest.class);
+                DOCKER_COMPOSE_RULE.projectName().asString() + "_default", DockerProxyRuleTest.class);
         try {
             dockerProxyRule.before();
             URLConnection urlConnection = new URL("http://web").openConnection();
@@ -107,8 +102,7 @@ public class DockerProxyRuleTest {
     public void canReachDockerContainerByHostnameAndDomainNameWithNetworkSpecified()
             throws IOException, InterruptedException {
         DockerProxyRule dockerProxyRule = DockerProxyRule.fromNetworkName(
-                DOCKER_COMPOSE_RULE.projectName().asString() + "_default",
-                DockerProxyRuleTest.class);
+                DOCKER_COMPOSE_RULE.projectName().asString() + "_default", DockerProxyRuleTest.class);
         try {
             dockerProxyRule.before();
             URLConnection urlConnection = new URL("http://web.server.here").openConnection();
@@ -120,9 +114,8 @@ public class DockerProxyRuleTest {
 
     @Test
     public void otherHostnamesStillResolve() throws IOException, InterruptedException {
-        DockerProxyRule dockerProxyRule = DockerProxyRule.fromProjectName(
-                DOCKER_COMPOSE_RULE.projectName(),
-                DockerProxyRuleTest.class);
+        DockerProxyRule dockerProxyRule =
+                DockerProxyRule.fromProjectName(DOCKER_COMPOSE_RULE.projectName(), DockerProxyRuleTest.class);
         try {
             dockerProxyRule.before();
             URLConnection urlConnection = new URL("http://www.palantir.com").openConnection();
@@ -134,6 +127,7 @@ public class DockerProxyRuleTest {
 
     @Test(expected = IllegalStateException.class)
     public void runningProxyRuleBeforeDockerComposeRuleFails() throws IOException, InterruptedException {
-        DockerProxyRule.fromNetworkName("doesnotexist", DockerProxyRuleTest.class).before();
+        DockerProxyRule.fromNetworkName("doesnotexist", DockerProxyRuleTest.class)
+                .before();
     }
 }

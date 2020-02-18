@@ -35,9 +35,11 @@ public final class DockerProxyExtension extends DockerProxyManager<DockerCompose
      * @param classToLogFor              The class using {@link DockerProxyExtension}
      */
     DockerProxyExtension(
-            Function<DockerExecutable, DockerContainerInfo> dockerContainerInfoCreator,
-            Class<?> classToLogFor) {
-        super(customizer -> customizer.apply(DockerComposeExtension.builder().retryAttempts(0)).build(),
+            Function<DockerExecutable, DockerContainerInfo> dockerContainerInfoCreator, Class<?> classToLogFor) {
+        super(
+                customizer -> customizer
+                        .apply(DockerComposeExtension.builder().retryAttempts(0))
+                        .build(),
                 dockerContainerInfoCreator,
                 classToLogFor);
     }
@@ -49,8 +51,8 @@ public final class DockerProxyExtension extends DockerProxyManager<DockerCompose
      * @param classToLogFor The class using {@link DockerProxyExtension}
      */
     public static DockerProxyExtension fromProjectName(ProjectName projectName, Class<?> classToLogFor) {
-        return new DockerProxyExtension(docker ->
-                new ProjectBasedDockerContainerInfo(docker, projectName), classToLogFor);
+        return new DockerProxyExtension(
+                docker -> new ProjectBasedDockerContainerInfo(docker, projectName), classToLogFor);
     }
 
     /**
@@ -60,8 +62,8 @@ public final class DockerProxyExtension extends DockerProxyManager<DockerCompose
      * @param classToLogFor The class using {@link DockerProxyExtension}
      */
     public static DockerProxyExtension fromNetworkName(String networkName, Class<?> classToLogFor) {
-        return new DockerProxyExtension(docker ->
-                new NetworkBasedDockerContainerInfo(docker, networkName), classToLogFor);
+        return new DockerProxyExtension(
+                docker -> new NetworkBasedDockerContainerInfo(docker, networkName), classToLogFor);
     }
 
     @Override
