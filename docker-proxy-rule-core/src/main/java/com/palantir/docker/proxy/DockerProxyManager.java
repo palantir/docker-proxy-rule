@@ -64,10 +64,11 @@ abstract class DockerProxyManager<SelfT extends DockerComposeManager.BuilderExte
                 .build());
         String logDirectory = DockerProxyManager.class.getSimpleName() + "-" + classToLogFor.getSimpleName();
         this.dockerContainerInfo = new CachingDockerContainerInfo(builtDockerContainerInfo);
-        this.dockerComposeRule = builderSupplier.customize(builder -> builder
-                .file(getDockerComposeFile(this.dockerContainerInfo.getNetworkName()).getPath())
-                .waitingForService("proxy", Container::areAllPortsOpen)
-                .saveLogsTo(LogDirectory.circleAwareLogDirectory(logDirectory)));
+        this.dockerComposeRule = builderSupplier.customize(
+                builder -> builder.file(getDockerComposeFile(this.dockerContainerInfo.getNetworkName())
+                                .getPath())
+                        .waitingForService("proxy", Container::areAllPortsOpen)
+                        .saveLogsTo(LogDirectory.circleAwareLogDirectory(logDirectory)));
     }
 
     public interface Customizer<T> {
@@ -80,9 +81,7 @@ abstract class DockerProxyManager<SelfT extends DockerComposeManager.BuilderExte
             dockerComposeRule.before();
             setNameService(new DockerNameService(dockerContainerInfo));
             ProxySelector.setDefault(new DockerProxySelector(
-                    dockerComposeRule.containers(),
-                    dockerContainerInfo,
-                    originalProxySelector));
+                    dockerComposeRule.containers(), dockerContainerInfo, originalProxySelector));
         } catch (DockerExecutionException e) {
             if (e.getMessage().contains("declared as external")) {
                 throw new IllegalStateException(
@@ -102,13 +101,9 @@ abstract class DockerProxyManager<SelfT extends DockerComposeManager.BuilderExte
     private static File getDockerComposeFile(String networkName) {
         try {
             File proxyFile = File.createTempFile("proxy", ".yml");
-            String proxyConfig = Resources.toString(
-                    Resources.getResource("docker-compose.proxy.yml"),
-                    StandardCharsets.UTF_8);
-            Files.write(
-                    proxyConfig.replace("{{NETWORK_NAME}}", networkName),
-                    proxyFile,
-                    StandardCharsets.UTF_8);
+            String proxyConfig =
+                    Resources.toString(Resources.getResource("docker-compose.proxy.yml"), StandardCharsets.UTF_8);
+            Files.write(proxyConfig.replace("{{NETWORK_NAME}}", networkName), proxyFile, StandardCharsets.UTF_8);
             return proxyFile;
         } catch (IOException e) {
             throw Throwables.propagate(e);
@@ -170,7 +165,7 @@ abstract class DockerProxyManager<SelfT extends DockerComposeManager.BuilderExte
             Class<?> clazz = Class.forName(className);
             return Proxy.newProxyInstance(
                     clazz.getClassLoader(),
-                    new Class<?>[] { clazz },
+                    new Class<?>[] {clazz},
                     new ForwardingNameServiceHandler(delegate, fallback));
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException("Unable to find class " + className, e);

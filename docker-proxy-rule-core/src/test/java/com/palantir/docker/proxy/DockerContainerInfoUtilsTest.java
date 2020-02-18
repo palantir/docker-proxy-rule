@@ -43,7 +43,8 @@ public class DockerContainerInfoUtilsTest {
         when(response.getInputStream()).thenReturn(getDockerOutputForStoppedContainer());
         when(response.waitFor(anyLong(), any(TimeUnit.class))).thenReturn(true);
         when(response.exitValue()).thenReturn(0);
-        when(dockerExecutable.execute("inspect", "--format", IP_FORMAT_STRING, CONTAINER_ID)).thenReturn(response);
+        when(dockerExecutable.execute("inspect", "--format", IP_FORMAT_STRING, CONTAINER_ID))
+                .thenReturn(response);
 
         Optional<String> ip = DockerContainerInfoUtils.getContainerIpFromId(dockerExecutable, CONTAINER_ID);
         assertThat(ip).isNotPresent();

@@ -33,9 +33,11 @@ public final class DockerProxyRule extends DockerProxyManager<DockerComposeRule.
      * @param classToLogFor The class using {@link DockerProxyRule}
      */
     DockerProxyRule(
-            Function<DockerExecutable, DockerContainerInfo> dockerContainerInfoCreator,
-            Class<?> classToLogFor) {
-        super(customizer -> customizer.apply(DockerComposeRule.builder().retryAttempts(0)).build(),
+            Function<DockerExecutable, DockerContainerInfo> dockerContainerInfoCreator, Class<?> classToLogFor) {
+        super(
+                customizer -> customizer
+                        .apply(DockerComposeRule.builder().retryAttempts(0))
+                        .build(),
                 dockerContainerInfoCreator,
                 classToLogFor);
     }
