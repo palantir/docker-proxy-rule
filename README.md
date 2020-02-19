@@ -1,3 +1,7 @@
+<p align="right">
+<a href="https://autorelease.general.dmz.palantir.tech/palantir/docker-proxy-rule"><img src="https://img.shields.io/badge/Perform%20an-Autorelease-success.svg" alt="Autorelease"></a>
+</p>
+
 [![build status](https://circleci.com/gh/palantir/docker-proxy-rule.svg?syle=shield)](https://circleci.com/gh/palantir/docker-proxy-rule) [![Download](https://api.bintray.com/packages/palantir/releases/docker-proxy-rule/images/download.svg) ](https://bintray.com/palantir/releases/docker-proxy-rule/_latestVersion)
 
 Docker Proxy JUnit Rule
