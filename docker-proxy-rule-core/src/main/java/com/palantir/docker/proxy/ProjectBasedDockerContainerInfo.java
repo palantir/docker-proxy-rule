@@ -35,7 +35,7 @@ public final class ProjectBasedDockerContainerInfo implements DockerContainerInf
         return StreamEx.of(DockerContainerInfoUtils.getContainerIdsInDockerComposeProject(docker, projectName))
                 .mapToEntry(containerId -> DockerContainerInfoUtils.getAllNamesForContainerId(docker, containerId))
                 .filterValues(names -> names.contains(hostname))
-                .mapToValue((containerId, names) -> DockerContainerInfoUtils.getContainerIpFromId(docker, containerId))
+                .mapToValue((containerId, _names) -> DockerContainerInfoUtils.getContainerIpFromId(docker, containerId))
                 .filterValues(Optional::isPresent)
                 .mapValues(Optional::get)
                 .values()

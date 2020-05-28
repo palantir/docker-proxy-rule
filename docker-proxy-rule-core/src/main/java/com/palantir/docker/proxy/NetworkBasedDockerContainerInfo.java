@@ -34,7 +34,7 @@ public final class NetworkBasedDockerContainerInfo implements DockerContainerInf
         return StreamEx.of(DockerContainerInfoUtils.getContainerIdsOnNetwork(docker, networkName))
                 .mapToEntry(containerId -> DockerContainerInfoUtils.getAllNamesForContainerId(docker, containerId))
                 .filterValues(names -> names.contains(hostname))
-                .mapToValue((containerId, names) -> DockerContainerInfoUtils.getContainerIpFromId(docker, containerId))
+                .mapToValue((containerId, _names) -> DockerContainerInfoUtils.getContainerIpFromId(docker, containerId))
                 .filterValues(Optional::isPresent)
                 .mapValues(Optional::get)
                 .values()
