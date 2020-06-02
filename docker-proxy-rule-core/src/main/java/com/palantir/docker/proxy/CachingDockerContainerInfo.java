@@ -45,11 +45,11 @@ public final class CachingDockerContainerInfo implements DockerContainerInfo {
         this.ipForHostCache = CacheBuilder.newBuilder()
                 .expireAfterWrite(4 * refreshDuration, refreshUnit)
                 .refreshAfterWrite(refreshDuration, refreshUnit)
-                .build(CacheLoader.from(hostname -> delegate.getIpForHost(hostname)));
+                .build(CacheLoader.from(delegate::getIpForHost));
         this.hostForIpCache = CacheBuilder.newBuilder()
                 .expireAfterWrite(4 * refreshDuration, refreshUnit)
                 .refreshAfterWrite(refreshDuration / 4, refreshUnit)
-                .build(CacheLoader.from(hostname -> delegate.getHostForIp(hostname)));
+                .build(CacheLoader.from(delegate::getHostForIp));
     }
 
     @Override
