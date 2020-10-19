@@ -3,4 +3,4 @@ junit:junit = 4.13.1
 one.util:streamex = 0.7.3
 org.assertj:assertj-core = 3.17.2
 org.junit.jupiter:* = 5.7.0
-org.mockito:mockito-core = 3.5.13
+org.mockito:mockito-core = 3.5.15
