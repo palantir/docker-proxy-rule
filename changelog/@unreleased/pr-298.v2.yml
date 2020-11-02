@@ -1,0 +1,6 @@
+type: fix
+fix:
+  description: Update usage to work with builds of Dante after 410c297862615aff77f27b99ff7151dcf20c8f71,
+    generated on the 30th of October.
+  links:
+  - https://github.com/palantir/docker-proxy-rule/pull/298
