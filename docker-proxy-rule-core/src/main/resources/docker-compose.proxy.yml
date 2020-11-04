@@ -5,7 +5,7 @@ services:
     image: vimagick/dante:latest
     ports:
       - "1080"
-    command: bash -c '(sed -i.bak "s/username //" /etc/dante/sockd.conf && sockd -f /etc/dante/sockd.conf -p /run/sockd.pid -N 10) || (sed -i.bak "s/username //" /etc/sockd.conf && sockd -f /etc/dante/sockd.conf -p /tmp/sockd.pid)'
+    command: bash -c '(sed -i.bak "s/username //" /etc/dante/sockd.conf && sockd -f /etc/dante/sockd.conf -p /run/sockd.pid -N 10) || (sed -i.bak "s/username //" /etc/sockd.conf && sockd -f /etc/sockd.conf -p /tmp/sockd.pid -N 10)'
 
 networks:
   default:
