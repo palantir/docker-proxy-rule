@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Now try both special paths for the vimagick/dante container, handling both old and latest containers.
+  links:
+  - https://github.com/palantir/docker-proxy-rule/pull/300
