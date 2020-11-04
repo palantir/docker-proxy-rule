@@ -1,0 +1,5 @@
+type: improvement
+improvement:
+  description: The legacy setup path for `vimagick/dante` now works correctly.
+  links:
+  - https://github.com/palantir/docker-proxy-rule/pull/301
