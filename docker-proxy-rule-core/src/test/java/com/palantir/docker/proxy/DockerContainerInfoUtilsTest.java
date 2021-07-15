@@ -30,7 +30,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DockerContainerInfoUtilsTest {
     private static final String CONTAINER_ID = "container-id";
