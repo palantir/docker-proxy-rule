@@ -14,4 +14,9 @@ dependencies {
 
     testImplementation group: 'org.assertj', name: 'assertj-core'
     testImplementation group: 'org.mockito', name: 'mockito-core'
+    integrationTestImplementation 'org.junit.jupiter:junit-jupiter'
+    integrationTestRuntimeOnly 'org.junit.vintage:junit-vintage-engine', {
+        because 'allows JUnit 3 and JUnit 4 tests to run'
+    }
+    testImplementation 'org.junit.jupiter:junit-jupiter'
 }
