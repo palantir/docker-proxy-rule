@@ -160,6 +160,7 @@ abstract class DockerProxyManager<SelfT extends DockerComposeManager.BuilderExte
         }
     }
 
+    @SuppressWarnings("ProxyNonConstantType")
     private static Object wrapNameService(String className, Object delegate, Object fallback) {
         try {
             Class<?> clazz = Class.forName(className);
