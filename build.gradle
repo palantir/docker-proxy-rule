@@ -2,7 +2,6 @@ buildscript {
     repositories {
         gradlePluginPortal()
         mavenCentral()
-        jcenter()
     }
     dependencies {
         classpath 'com.palantir.gradle.externalpublish:gradle-external-publish-plugin:1.4.0'
@@ -27,7 +26,6 @@ allprojects {
 
     repositories {
         mavenCentral()
-        jcenter()
     }
 }
 
