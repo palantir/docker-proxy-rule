@@ -4,3 +4,4 @@ one.util:streamex = 0.7.3
 org.assertj:assertj-core = 3.20.2
 org.junit.jupiter:* = 5.7.2
 org.mockito:* = 4.0.0
+org.hamcrest:* = 2.1
