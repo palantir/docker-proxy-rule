@@ -2,7 +2,7 @@
 <a href="https://autorelease.general.dmz.palantir.tech/palantir/docker-proxy-rule"><img src="https://img.shields.io/badge/Perform%20an-Autorelease-success.svg" alt="Autorelease"></a>
 </p>
 
-[![build status](https://circleci.com/gh/palantir/docker-proxy-rule.svg?syle=shield)](https://circleci.com/gh/palantir/docker-proxy-rule) [![Download](https://api.bintray.com/packages/palantir/releases/docker-proxy-rule/images/download.svg) ](https://bintray.com/palantir/releases/docker-proxy-rule/_latestVersion)
+[![build status](https://circleci.com/gh/palantir/docker-proxy-rule.svg?syle=shield)](https://circleci.com/gh/palantir/docker-proxy-rule)
 
 Docker Proxy JUnit Rule
 =======================
@@ -25,12 +25,10 @@ Add a dependency to your project. For example, in gradle:
 
 ```groovy
 repositories {
-    maven {
-        url 'https://dl.bintray.com/palantir/releases' // docker-proxy-rule is published on bintray
-    }
+    mavenCentral() // docker-proxy-rule is published on maven central
 }
 dependencies {
-    compile 'com.palantir.docker.proxy:docker-proxy-rule:<latest-tag-from-bintray>'
+    testImplementation 'com.palantir.docker.proxy:docker-proxy-rule:<latest-tag>'
 }
 ```
 
@@ -49,6 +47,6 @@ public class MyIntegrationTest {
 
 You can then communicate with the hosts within your tests. For example:
 ```java
-URLConnection urlConnection = new URL("http://webserver").openConnection();
+URLConnection urlConnection = new URL(TARGET).openConnection();
 urlConnection.connect();
 ```
