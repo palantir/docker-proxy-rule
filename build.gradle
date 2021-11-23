@@ -19,6 +19,7 @@ apply plugin: 'com.palantir.external-publish'
 apply plugin: 'com.palantir.consistent-versions'
 apply plugin: 'com.palantir.git-version'
 apply plugin: 'com.palantir.baseline'
+apply plugin: 'com.palantir.baseline-java-versions'
 
 allprojects {
     apply plugin: 'com.palantir.java-format'
@@ -35,10 +36,12 @@ configure(subprojects) {
     apply plugin: 'java-library'
     apply plugin: 'org.inferred.processors'
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
 
     if (System.env.CIRCLE_TEST_REPORTS) {
         test.reports.junitXml.destination = new File(System.env.CIRCLE_TEST_REPORTS, it.getName())
     }
+}
+
+javaVersions {
+    libraryTarget = 11
 }
