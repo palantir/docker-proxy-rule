@@ -7,4 +7,9 @@ dependencies {
     testImplementation group: 'junit', name: 'junit'
     testImplementation group: 'org.assertj', name: 'assertj-core'
     testImplementation group: 'org.mockito', name: 'mockito-core'
+    testRuntimeOnly group: 'org.mockito', name: 'mockito-inline'
+}
+
+moduleJvmArgs {
+    opens 'java.base/java.net'
 }
