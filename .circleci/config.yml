@@ -103,6 +103,7 @@ jobs:
     environment:
       CIRCLE_TEST_REPORTS: /home/circleci/junit
       CIRCLE_ARTIFACTS: /home/circleci/artifacts
+      JAVA_HOME: /opt/java11
       _JAVA_OPTIONS: -Dorg.gradle.internal.launcher.welcomeMessageEnabled=false -Xmx8192m
     steps:
       - attach_workspace: { at: /home/circleci }
