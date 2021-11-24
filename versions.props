@@ -1,7 +1,7 @@
 com.palantir.docker.compose:* = 1.7.0
 junit:junit = 4.13.2
-one.util:streamex = 0.7.3
-org.assertj:assertj-core = 3.20.2
-org.junit.jupiter:* = 5.7.2
-org.mockito:* = 4.0.0
+one.util:streamex = 0.8.0
+org.assertj:assertj-core = 3.21.0
+org.junit.jupiter:* = 5.8.1
+org.mockito:* = 4.1.0
 org.hamcrest:* = 2.1
