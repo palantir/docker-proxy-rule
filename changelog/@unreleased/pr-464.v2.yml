@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Add module options to support name resolution on Java 16+
+  links:
+  - https://github.com/palantir/docker-proxy-rule/pull/464
