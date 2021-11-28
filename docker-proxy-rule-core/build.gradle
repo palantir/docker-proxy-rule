@@ -8,6 +8,10 @@ dependencies {
     testImplementation group: 'org.assertj', name: 'assertj-core'
     testImplementation group: 'org.mockito', name: 'mockito-core'
     testRuntimeOnly group: 'org.mockito', name: 'mockito-inline'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine', {
+        because 'allows JUnit 3 and JUnit 4 tests to run'
+    }
 }
 
 moduleJvmArgs {
