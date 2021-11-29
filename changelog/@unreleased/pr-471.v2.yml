@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Produce java8 bytecode
+  links:
+  - https://github.com/palantir/docker-proxy-rule/pull/471
