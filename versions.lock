@@ -46,7 +46,7 @@ org.yaml:snakeyaml:1.27 (1 constraints: 7217fa27)
 [Test dependencies]
 net.bytebuddy:byte-buddy:1.12.4 (1 constraints: 420b3cde)
 net.bytebuddy:byte-buddy-agent:1.12.4 (1 constraints: 420b3cde)
-org.assertj:assertj-core:3.21.0 (1 constraints: 38053c3b)
+org.assertj:assertj-core:3.22.0 (1 constraints: 39053f3b)
 org.junit.jupiter:junit-jupiter:5.8.2 (2 constraints: 260e7a59)
 org.junit.jupiter:junit-jupiter-engine:5.8.2 (2 constraints: 2117d23c)
 org.junit.jupiter:junit-jupiter-params:5.8.2 (2 constraints: 2117d23c)
