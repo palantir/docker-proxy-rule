@@ -9,5 +9,5 @@ services:
 
 networks:
   default:
-    external:
-      name: {{NETWORK_NAME}}
+    external: true
+    name: {{NETWORK_NAME}}
