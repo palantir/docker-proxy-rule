@@ -64,11 +64,12 @@ abstract class DockerProxyManager<SelfT extends DockerComposeManager.BuilderExte
                 .build());
         String logDirectory = DockerProxyManager.class.getSimpleName() + "-" + classToLogFor.getSimpleName();
         this.dockerContainerInfo = new CachingDockerContainerInfo(builtDockerContainerInfo);
-        this.dockerComposeRule = builderSupplier.customize(
-                builder -> builder.file(getDockerComposeFile(this.dockerContainerInfo.getNetworkName())
-                                .getPath())
-                        .waitingForService("proxy", Container::areAllPortsOpen)
-                        .saveLogsTo(LogDirectory.circleAwareLogDirectory(logDirectory)));
+        this.dockerComposeRule = builderSupplier.customize(builder -> builder.file(getDockerComposeFile(
+                                this.dockerContainerInfo.getNetworkName(),
+                                this.dockerContainerInfo.getImageNameOverride().orElse("vimagick/dante:latest"))
+                        .getPath())
+                .waitingForService("proxy", Container::areAllPortsOpen)
+                .saveLogsTo(LogDirectory.circleAwareLogDirectory(logDirectory)));
     }
 
     public interface Customizer<T> {
@@ -98,12 +99,15 @@ abstract class DockerProxyManager<SelfT extends DockerComposeManager.BuilderExte
         dockerComposeRule.after();
     }
 
-    private static File getDockerComposeFile(String networkName) {
+    private static File getDockerComposeFile(String networkName, String imageName) {
         try {
             File proxyFile = File.createTempFile("proxy", ".yml");
             String proxyConfig =
                     Resources.toString(Resources.getResource("docker-compose.proxy.yml"), StandardCharsets.UTF_8);
-            Files.write(proxyConfig.replace("{{NETWORK_NAME}}", networkName), proxyFile, StandardCharsets.UTF_8);
+            Files.write(
+                    proxyConfig.replace("{{NETWORK_NAME}}", networkName).replace("{{IMAGE_NAME}}", imageName),
+                    proxyFile,
+                    StandardCharsets.UTF_8);
             return proxyFile;
         } catch (IOException e) {
             throw Throwables.propagate(e);
