@@ -74,4 +74,9 @@ public final class CachingDockerContainerInfo implements DockerContainerInfo {
     public String getNetworkName() {
         return delegate.getNetworkName();
     }
+
+    @Override
+    public Optional<String> getImageNameOverride() {
+        return delegate.getImageNameOverride();
+    }
 }

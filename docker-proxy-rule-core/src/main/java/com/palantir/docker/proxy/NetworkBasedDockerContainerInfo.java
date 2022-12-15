@@ -23,10 +23,17 @@ import one.util.streamex.StreamEx;
 public final class NetworkBasedDockerContainerInfo implements DockerContainerInfo {
     private final DockerExecutable docker;
     private final String networkName;
+    private final Optional<String> imageNameOverride;
 
-    public NetworkBasedDockerContainerInfo(DockerExecutable docker, String networkName) {
+    public NetworkBasedDockerContainerInfo(
+            DockerExecutable docker, String networkName, Optional<String> imageNameOverride) {
         this.docker = docker;
         this.networkName = networkName;
+        this.imageNameOverride = imageNameOverride;
+    }
+
+    public NetworkBasedDockerContainerInfo(DockerExecutable docker, String networkName) {
+        this(docker, networkName, Optional.empty());
     }
 
     @Override
@@ -55,5 +62,10 @@ public final class NetworkBasedDockerContainerInfo implements DockerContainerInf
     @Override
     public String getNetworkName() {
         return networkName;
+    }
+
+    @Override
+    public Optional<String> getImageNameOverride() {
+        return imageNameOverride;
     }
 }

@@ -41,4 +41,10 @@ public interface DockerContainerInfo {
      * @return The network for the proxy to connect to
      */
     String getNetworkName();
+
+    /**
+     * Returns an override for the image name to use for the docker container,
+     * otherwise `vimagick/dante:latest` will get used.
+     */
+    Optional<String> getImageNameOverride();
 }

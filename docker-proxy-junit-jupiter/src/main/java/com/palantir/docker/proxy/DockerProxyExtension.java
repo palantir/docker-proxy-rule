@@ -20,6 +20,7 @@ import com.palantir.docker.compose.DockerComposeExtension;
 import com.palantir.docker.compose.configuration.ProjectName;
 import com.palantir.docker.compose.execution.DockerExecutable;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.function.Function;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -56,6 +57,20 @@ public final class DockerProxyExtension extends DockerProxyManager<DockerCompose
     }
 
     /**
+     * Creates a {@link DockerProxyExtension} using a {@link ProjectBasedDockerContainerInfo}.
+     *
+     * @param projectName The docker-compose-rule ProjectName to use to find the containers
+     * @param imageNameOverride The docker image name to use instead of the default
+     * @param classToLogFor The class using {@link DockerProxyExtension}
+     */
+    public static DockerProxyExtension fromProjectName(
+            ProjectName projectName, Class<?> classToLogFor, String imageNameOverride) {
+        return new DockerProxyExtension(
+                docker -> new ProjectBasedDockerContainerInfo(docker, projectName, Optional.of(imageNameOverride)),
+                classToLogFor);
+    }
+
+    /**
      * Creates a {@link DockerProxyExtension} using a {@link NetworkBasedDockerContainerInfo}.
      *
      * @param networkName The network name to use to find the containers
@@ -64,6 +79,20 @@ public final class DockerProxyExtension extends DockerProxyManager<DockerCompose
     public static DockerProxyExtension fromNetworkName(String networkName, Class<?> classToLogFor) {
         return new DockerProxyExtension(
                 docker -> new NetworkBasedDockerContainerInfo(docker, networkName), classToLogFor);
+    }
+
+    /**
+     * Creates a {@link DockerProxyExtension} using a {@link NetworkBasedDockerContainerInfo}.
+     *
+     * @param networkName The network name to use to find the containers
+     * @param imageNameOverride The docker image name to use instead of the default
+     * @param classToLogFor The class using {@link DockerProxyExtension}
+     */
+    public static DockerProxyExtension fromNetworkName(
+            String networkName, Class<?> classToLogFor, String imageNameOverride) {
+        return new DockerProxyExtension(
+                docker -> new NetworkBasedDockerContainerInfo(docker, networkName, Optional.of(imageNameOverride)),
+                classToLogFor);
     }
 
     @Override
