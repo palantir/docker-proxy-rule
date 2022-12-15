@@ -1,0 +1,6 @@
+type: feature
+feature:
+  description: Projects using DockerProxyExtension can now override the docker image
+    name used by the proxy.
+  links:
+  - https://github.com/palantir/docker-proxy-rule/pull/552
