@@ -19,6 +19,7 @@ package com.palantir.docker.proxy;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.palantir.docker.compose.DockerComposeExtension;
+import com.palantir.docker.compose.configuration.ProjectName;
 import com.palantir.docker.compose.connection.Container;
 import com.palantir.docker.compose.logging.LogDirectory;
 import java.io.IOException;
@@ -30,6 +31,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 class DockerProxyExtensionTest {
     @RegisterExtension
     static final DockerComposeExtension DOCKER_COMPOSE_EXTENSION = DockerComposeExtension.builder()
+            .projectName(ProjectName.fromString("dockerproxyextensiontest"))
             .file("src/integrationTest/resources/DockerProxyExtensionTest-services.yml")
             .saveLogsTo(LogDirectory.circleAwareLogDirectory(DockerProxyExtensionTest.class))
             .waitingForService("webserver", Container::areAllPortsOpen)

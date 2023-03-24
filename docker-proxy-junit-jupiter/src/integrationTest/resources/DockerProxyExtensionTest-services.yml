@@ -1,7 +1,10 @@
-version: '2'
+version: '2.1'
 
 services:
   webserver:
     hostname: web
     domainname: server.here
     image: 1science/nginx
+networks:
+  default:
+    name: dockerproxyextensiontest-default
