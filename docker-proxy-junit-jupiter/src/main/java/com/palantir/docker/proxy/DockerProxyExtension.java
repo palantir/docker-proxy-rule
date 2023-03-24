@@ -80,7 +80,7 @@ public final class DockerProxyExtension extends DockerProxyManager<DockerCompose
      * @param classToLogFor The class using {@link DockerProxyExtension}
      */
     public static DockerProxyExtension fromProjectName(
-            ProjectName projectName, Class<?> classToLogFor, String networkNameOverride, String imageNameOverride) {
+            ProjectName projectName, Class<?> classToLogFor, String imageNameOverride, String networkNameOverride) {
         return new DockerProxyExtension(
                 docker -> new ProjectBasedDockerContainerInfo(
                         docker, projectName, Optional.of(networkNameOverride), Optional.of(imageNameOverride)),
