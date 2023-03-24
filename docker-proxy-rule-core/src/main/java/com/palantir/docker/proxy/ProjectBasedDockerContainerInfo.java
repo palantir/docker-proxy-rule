@@ -67,7 +67,7 @@ public final class ProjectBasedDockerContainerInfo implements DockerContainerInf
 
     @Override
     public String getNetworkName() {
-        return networkNameOverride.orElse(projectName.asString() + "_default");
+        return networkNameOverride.orElseGet(() -> projectName.asString() + "_default");
     }
 
     @Override
