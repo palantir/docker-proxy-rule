@@ -75,7 +75,7 @@ public class DockerProxyRuleTest {
     @Test
     public void canReachDockerContainerByContainerNameWithNetworkSpecified() throws IOException, InterruptedException {
         DockerProxyRule dockerProxyRule = DockerProxyRule.fromNetworkName(
-                DOCKER_COMPOSE_RULE.projectName().asString() + "_default", DockerProxyRuleTest.class);
+                DOCKER_COMPOSE_RULE.projectName().asString() + "-default", DockerProxyRuleTest.class);
         try {
             dockerProxyRule.before();
             URLConnection urlConnection = new URL("http://webserver").openConnection();
@@ -88,7 +88,7 @@ public class DockerProxyRuleTest {
     @Test
     public void canReachDockerContainerByHostnameWithNetworkSpecified() throws IOException, InterruptedException {
         DockerProxyRule dockerProxyRule = DockerProxyRule.fromNetworkName(
-                DOCKER_COMPOSE_RULE.projectName().asString() + "_default", DockerProxyRuleTest.class);
+                DOCKER_COMPOSE_RULE.projectName().asString() + "-default", DockerProxyRuleTest.class);
         try {
             dockerProxyRule.before();
             URLConnection urlConnection = new URL("http://web").openConnection();
@@ -102,7 +102,7 @@ public class DockerProxyRuleTest {
     public void canReachDockerContainerByHostnameAndDomainNameWithNetworkSpecified()
             throws IOException, InterruptedException {
         DockerProxyRule dockerProxyRule = DockerProxyRule.fromNetworkName(
-                DOCKER_COMPOSE_RULE.projectName().asString() + "_default", DockerProxyRuleTest.class);
+                DOCKER_COMPOSE_RULE.projectName().asString() + "-default", DockerProxyRuleTest.class);
         try {
             dockerProxyRule.before();
             URLConnection urlConnection = new URL("http://web.server.here").openConnection();
