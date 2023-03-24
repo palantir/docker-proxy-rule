@@ -77,7 +77,7 @@ class DockerProxyExtensionTest {
     @Test
     void canReachDockerContainerByContainerNameWithNetworkSpecified() throws IOException, InterruptedException {
         DockerProxyExtension dockerProxyExtension = DockerProxyExtension.fromNetworkName(
-                DOCKER_COMPOSE_EXTENSION.projectName().asString() + "_default", DockerProxyExtensionTest.class);
+                DOCKER_COMPOSE_EXTENSION.projectName().asString() + "-default", DockerProxyExtensionTest.class);
         try {
             dockerProxyExtension.before();
             URLConnection urlConnection = new URL("http://webserver").openConnection();
@@ -90,7 +90,7 @@ class DockerProxyExtensionTest {
     @Test
     void canReachDockerContainerByHostnameWithNetworkSpecified() throws IOException, InterruptedException {
         DockerProxyExtension dockerProxyExtension = DockerProxyExtension.fromNetworkName(
-                DOCKER_COMPOSE_EXTENSION.projectName().asString() + "_default", DockerProxyExtensionTest.class);
+                DOCKER_COMPOSE_EXTENSION.projectName().asString() + "-default", DockerProxyExtensionTest.class);
         try {
             dockerProxyExtension.before();
             URLConnection urlConnection = new URL("http://web").openConnection();
@@ -103,7 +103,7 @@ class DockerProxyExtensionTest {
     @Test
     void canReachDockerContainerByHostnameAndDomainNameWithNetworkSpecified() throws IOException, InterruptedException {
         DockerProxyExtension dockerProxyExtension = DockerProxyExtension.fromNetworkName(
-                DOCKER_COMPOSE_EXTENSION.projectName().asString() + "_default", DockerProxyExtensionTest.class);
+                DOCKER_COMPOSE_EXTENSION.projectName().asString() + "-default", DockerProxyExtensionTest.class);
         try {
             dockerProxyExtension.before();
             URLConnection urlConnection = new URL("http://web.server.here").openConnection();
