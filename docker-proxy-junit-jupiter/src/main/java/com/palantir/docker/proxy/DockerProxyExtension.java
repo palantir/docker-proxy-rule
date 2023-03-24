@@ -66,7 +66,24 @@ public final class DockerProxyExtension extends DockerProxyManager<DockerCompose
     public static DockerProxyExtension fromProjectName(
             ProjectName projectName, Class<?> classToLogFor, String imageNameOverride) {
         return new DockerProxyExtension(
-                docker -> new ProjectBasedDockerContainerInfo(docker, projectName, Optional.of(imageNameOverride)),
+                docker -> new ProjectBasedDockerContainerInfo(
+                        docker, projectName, Optional.empty(), Optional.of(imageNameOverride)),
+                classToLogFor);
+    }
+
+    /**
+     * Creates a {@link DockerProxyExtension} using a {@link ProjectBasedDockerContainerInfo}.
+     *
+     * @param projectName The docker-compose-rule ProjectName to use to find the containers
+     * @param networkNameOverride The docker network name to use instead of the default
+     * @param imageNameOverride The docker image name to use instead of the default
+     * @param classToLogFor The class using {@link DockerProxyExtension}
+     */
+    public static DockerProxyExtension fromProjectName(
+            ProjectName projectName, Class<?> classToLogFor, String networkNameOverride, String imageNameOverride) {
+        return new DockerProxyExtension(
+                docker -> new ProjectBasedDockerContainerInfo(
+                        docker, projectName, Optional.of(networkNameOverride), Optional.of(imageNameOverride)),
                 classToLogFor);
     }
 
