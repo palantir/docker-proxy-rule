@@ -1,0 +1,5 @@
+type: improvement
+improvement:
+  description: Docker compose retry attempts for DockerProxyExtension are configurable
+  links:
+  - https://github.com/palantir/docker-proxy-rule/pull/563
