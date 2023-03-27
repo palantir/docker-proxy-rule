@@ -1,0 +1,5 @@
+type: improvement
+improvement:
+  description: Remove retryAttempts override for DockerProxyExtension
+  links:
+  - https://github.com/palantir/docker-proxy-rule/pull/564
