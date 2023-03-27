@@ -38,9 +38,7 @@ public final class DockerProxyExtension extends DockerProxyManager<DockerCompose
     DockerProxyExtension(
             Function<DockerExecutable, DockerContainerInfo> dockerContainerInfoCreator, Class<?> classToLogFor) {
         super(
-                customizer -> customizer
-                        .apply(DockerComposeExtension.builder().retryAttempts(0))
-                        .build(),
+                customizer -> customizer.apply(DockerComposeExtension.builder()).build(),
                 dockerContainerInfoCreator,
                 classToLogFor);
     }
