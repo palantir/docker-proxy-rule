@@ -34,15 +34,30 @@ public final class DockerProxyExtension extends DockerProxyManager<DockerCompose
      *
      * @param dockerContainerInfoCreator A {@link Function} that creates the DockerContainerInfo to use
      * @param classToLogFor              The class using {@link DockerProxyExtension}
+     * @param retryAttempts              The number of times to attempt to retry docker compose up and ps commands
      */
     DockerProxyExtension(
-            Function<DockerExecutable, DockerContainerInfo> dockerContainerInfoCreator, Class<?> classToLogFor) {
+            Function<DockerExecutable, DockerContainerInfo> dockerContainerInfoCreator,
+            Class<?> classToLogFor,
+            int retryAttempts) {
         super(
                 customizer -> customizer
-                        .apply(DockerComposeExtension.builder().retryAttempts(0))
+                        .apply(DockerComposeExtension.builder().retryAttempts(retryAttempts))
                         .build(),
                 dockerContainerInfoCreator,
                 classToLogFor);
+    }
+
+    /**
+     * Creates a {@link DockerProxyExtension} which will create a proxy and DNS so that tests can interface with docker
+     * containers directly.
+     *
+     * @param dockerContainerInfoCreator A {@link Function} that creates the DockerContainerInfo to use
+     * @param classToLogFor              The class using {@link DockerProxyExtension}
+     */
+    DockerProxyExtension(
+            Function<DockerExecutable, DockerContainerInfo> dockerContainerInfoCreator, Class<?> classToLogFor) {
+        this(dockerContainerInfoCreator, classToLogFor, 0);
     }
 
     /**
@@ -68,6 +83,22 @@ public final class DockerProxyExtension extends DockerProxyManager<DockerCompose
         return new DockerProxyExtension(
                 docker -> new ProjectBasedDockerContainerInfo(docker, projectName, Optional.of(imageNameOverride)),
                 classToLogFor);
+    }
+
+    /**
+     * Creates a {@link DockerProxyExtension} using a {@link ProjectBasedDockerContainerInfo}.
+     *
+     * @param projectName       The docker-compose-rule ProjectName to use to find the containers
+     * @param imageNameOverride The docker image name to use instead of the default
+     * @param classToLogFor     The class using {@link DockerProxyExtension}
+     * @param retryAttempts     The number of times to attempt to retry docker compose up and ps commands
+     */
+    public static DockerProxyExtension fromProjectName(
+            ProjectName projectName, Class<?> classToLogFor, String imageNameOverride, int retryAttempts) {
+        return new DockerProxyExtension(
+                docker -> new ProjectBasedDockerContainerInfo(docker, projectName, Optional.of(imageNameOverride)),
+                classToLogFor,
+                retryAttempts);
     }
 
     /**
