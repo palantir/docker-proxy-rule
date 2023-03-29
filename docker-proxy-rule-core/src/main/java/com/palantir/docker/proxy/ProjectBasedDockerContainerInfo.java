@@ -25,16 +25,21 @@ public final class ProjectBasedDockerContainerInfo implements DockerContainerInf
     private final DockerExecutable docker;
     private final ProjectName projectName;
     private final Optional<String> imageNameOverride;
+    private final Optional<String> networkNameOverride;
 
     public ProjectBasedDockerContainerInfo(
-            DockerExecutable docker, ProjectName projectName, Optional<String> imageNameOverride) {
+            DockerExecutable docker,
+            ProjectName projectName,
+            Optional<String> imageNameOverride,
+            Optional<String> networkNameOverride) {
         this.docker = docker;
         this.projectName = projectName;
         this.imageNameOverride = imageNameOverride;
+        this.networkNameOverride = networkNameOverride;
     }
 
     public ProjectBasedDockerContainerInfo(DockerExecutable docker, ProjectName projectName) {
-        this(docker, projectName, Optional.empty());
+        this(docker, projectName, Optional.empty(), Optional.empty());
     }
 
     @Override
@@ -62,7 +67,7 @@ public final class ProjectBasedDockerContainerInfo implements DockerContainerInf
 
     @Override
     public String getNetworkName() {
-        return projectName.asString() + "_default";
+        return networkNameOverride.orElseGet(() -> projectName.asString() + "_default");
     }
 
     @Override

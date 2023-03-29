@@ -1,0 +1,6 @@
+type: feature
+feature:
+  description: Projects using DockerProxyExtension for project-based containers can
+    now override the docker network name used by the proxy
+  links:
+  - https://github.com/palantir/docker-proxy-rule/pull/561
