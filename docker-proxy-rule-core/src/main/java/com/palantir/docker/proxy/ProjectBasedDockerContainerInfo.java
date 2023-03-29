@@ -24,18 +24,18 @@ import one.util.streamex.StreamEx;
 public final class ProjectBasedDockerContainerInfo implements DockerContainerInfo {
     private final DockerExecutable docker;
     private final ProjectName projectName;
-    private final Optional<String> networkNameOverride;
     private final Optional<String> imageNameOverride;
+    private final Optional<String> networkNameOverride;
 
     public ProjectBasedDockerContainerInfo(
             DockerExecutable docker,
             ProjectName projectName,
-            Optional<String> networkNameOverride,
-            Optional<String> imageNameOverride) {
+            Optional<String> imageNameOverride,
+            Optional<String> networkNameOverride) {
         this.docker = docker;
         this.projectName = projectName;
-        this.networkNameOverride = networkNameOverride;
         this.imageNameOverride = imageNameOverride;
+        this.networkNameOverride = networkNameOverride;
     }
 
     public ProjectBasedDockerContainerInfo(DockerExecutable docker, ProjectName projectName) {
