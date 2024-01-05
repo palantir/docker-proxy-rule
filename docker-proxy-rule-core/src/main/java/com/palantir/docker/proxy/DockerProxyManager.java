@@ -35,16 +35,10 @@ import java.lang.reflect.Proxy;
 import java.net.InetAddress;
 import java.net.ProxySelector;
 import java.net.UnknownHostException;
-import java.net.spi.InetAddressResolver;
-import java.net.spi.InetAddressResolverProvider;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
-import java.util.stream.Stream;
-import javax.annotation.Nullable;
 
 @SuppressWarnings("PreferSafeLoggableExceptions")
 abstract class DockerProxyManager<SelfT extends DockerComposeManager.BuilderExtensions<SelfT>> {
@@ -53,6 +47,7 @@ abstract class DockerProxyManager<SelfT extends DockerComposeManager.BuilderExte
 
     private ProxySelector originalProxySelector;
     private Object originalNameService;
+    private static DockerNameService dockerNameService;
 
     /**
      * Creates a {@link DockerProxyManager} which will create a proxy and DNS so that
@@ -128,7 +123,7 @@ abstract class DockerProxyManager<SelfT extends DockerComposeManager.BuilderExte
             originalNameService = getJava9NameService();
             setJava9NameService(wrapNameService("java.net.InetAddress$NameService", nameService, originalNameService));
         } else {
-            getJava21DockerProxyInetAddressResolverProvider(nameService);
+            dockerNameService = nameService;
         }
     }
 
@@ -139,8 +134,12 @@ abstract class DockerProxyManager<SelfT extends DockerComposeManager.BuilderExte
         } else if (featureVersion < 21) {
             setJava9NameService(originalNameService);
         } else {
-            unsetJava21DockerProxyInetAddressResolverProvider();
+            dockerNameService = null;
         }
+    }
+
+    public static DockerNameService getDockerNameService() {
+        return dockerNameService;
     }
 
     @SuppressWarnings("unchecked")
@@ -171,89 +170,6 @@ abstract class DockerProxyManager<SelfT extends DockerComposeManager.BuilderExte
             nameService.set(null, newNameService);
         } catch (Throwable e) {
             throw new IllegalStateException("Unable to set Java 9+ name service", e);
-        }
-    }
-
-    private static void getJava21DockerProxyInetAddressResolverProvider(DockerNameService dockerNameService) {
-        try {
-            DockerProxyInetAddressResolverProvider.dockerProxyInetAddressResolver =
-                    new DockerProxyInetAddressResolver(dockerNameService);
-        } catch (Throwable e) {
-            throw new IllegalStateException("Unable to create Java 21+ InetAddressResolverProvider", e);
-        }
-    }
-
-    private static void unsetJava21DockerProxyInetAddressResolverProvider() {
-        DockerProxyInetAddressResolverProvider.dockerProxyInetAddressResolver = null;
-    }
-
-    public static class DockerProxyInetAddressResolverProvider extends InetAddressResolverProvider {
-        @Nullable
-        private static InetAddressResolver dockerProxyInetAddressResolver;
-
-        @Override
-        public InetAddressResolver get(Configuration configuration) {
-            return Optional.<InetAddressResolver>ofNullable(dockerProxyInetAddressResolver)
-                    .<InetAddressResolver>map(dockerResolver ->
-                            new ForwardingInetAddressResolver(dockerResolver, configuration.builtinResolver()))
-                    .orElseGet(configuration::builtinResolver);
-        }
-
-        @Override
-        public String name() {
-            return "DockerProxyInetAddressResolverProvider";
-        }
-    }
-
-    private static final class DockerProxyInetAddressResolver implements InetAddressResolver {
-        private final DockerNameService dockerNameService;
-
-        private DockerProxyInetAddressResolver(DockerNameService dockerNameService) {
-            this.dockerNameService = dockerNameService;
-        }
-
-        @Override
-        public Stream<InetAddress> lookupByName(String host, LookupPolicy _lookupPolicy) throws UnknownHostException {
-            return Arrays.stream(dockerNameService.lookupAllHostAddr(host));
-        }
-
-        @Override
-        public String lookupByAddress(byte[] addr) throws UnknownHostException {
-            return dockerNameService.getHostByAddr(addr);
-        }
-    }
-
-    private static class ForwardingInetAddressResolver implements InetAddressResolver {
-        private final InetAddressResolver delegate;
-        private final InetAddressResolver fallback;
-
-        ForwardingInetAddressResolver(InetAddressResolver delegate, InetAddressResolver fallback) {
-            this.delegate = delegate;
-            this.fallback = fallback;
-        }
-
-        @Override
-        public Stream<InetAddress> lookupByName(String host, LookupPolicy lookupPolicy) throws UnknownHostException {
-            try {
-                return delegate.lookupByName(host, lookupPolicy);
-            } catch (UnknownHostException e) {
-                if (fallback != null) {
-                    return fallback.lookupByName(host, lookupPolicy);
-                }
-                throw e;
-            }
-        }
-
-        @Override
-        public String lookupByAddress(byte[] addr) throws UnknownHostException {
-            try {
-                return delegate.lookupByAddress(addr);
-            } catch (UnknownHostException e) {
-                if (fallback != null) {
-                    return fallback.lookupByAddress(addr);
-                }
-                throw e;
-            }
         }
     }
 

@@ -35,6 +35,7 @@ public final class DockerProxySelector extends ProxySelector {
     private final DockerContainerInfo containerInfo;
     private final ProxySelector delegate;
 
+    @SuppressWarnings("DnsLookup")
     public DockerProxySelector(Cluster containers, DockerContainerInfo containerInfo, ProxySelector delegate) {
         // We can't call InetSocketAddress.createUnresolved here as some downstream libraries cannot deal with
         // getAddress returning null.
