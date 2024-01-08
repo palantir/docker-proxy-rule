@@ -4,4 +4,4 @@ services:
   webserver:
     hostname: web
     domainname: server.here
-    image: 1science/nginx
+    image: nginx
