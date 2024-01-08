@@ -39,6 +39,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import javax.annotation.Nullable;
 
 @SuppressWarnings("PreferSafeLoggableExceptions")
 abstract class DockerProxyManager<SelfT extends DockerComposeManager.BuilderExtensions<SelfT>> {
@@ -47,6 +48,8 @@ abstract class DockerProxyManager<SelfT extends DockerComposeManager.BuilderExte
 
     private ProxySelector originalProxySelector;
     private Object originalNameService;
+
+    @Nullable
     private static DockerNameService dockerNameService;
 
     /**
@@ -138,6 +141,7 @@ abstract class DockerProxyManager<SelfT extends DockerComposeManager.BuilderExte
         }
     }
 
+    @Nullable
     public static DockerNameService getDockerNameService() {
         return dockerNameService;
     }
