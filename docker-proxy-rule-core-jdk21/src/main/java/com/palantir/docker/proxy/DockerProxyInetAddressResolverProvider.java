@@ -16,9 +16,11 @@
 
 package com.palantir.docker.proxy;
 
+import com.google.auto.service.AutoService;
 import java.net.spi.InetAddressResolver;
 import java.net.spi.InetAddressResolverProvider;
 
+@AutoService(InetAddressResolverProvider.class)
 public final class DockerProxyInetAddressResolverProvider extends InetAddressResolverProvider {
 
     @Override
