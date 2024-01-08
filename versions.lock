@@ -43,8 +43,8 @@ org.slf4j:slf4j-api:1.7.30 (2 constraints: fe2397b2)
 org.yaml:snakeyaml:1.27 (1 constraints: 7217fa27)
 
 [Test dependencies]
-net.bytebuddy:byte-buddy:1.12.8 (1 constraints: 460b40de)
-net.bytebuddy:byte-buddy-agent:1.12.8 (1 constraints: 460b40de)
+net.bytebuddy:byte-buddy:1.14.11 (1 constraints: 460b40de)
+net.bytebuddy:byte-buddy-agent:1.14.11 (1 constraints: 460b40de)
 org.assertj:assertj-core:3.22.0 (1 constraints: 39053f3b)
 org.junit.jupiter:junit-jupiter:5.8.2 (1 constraints: 11051e36)
 org.junit.jupiter:junit-jupiter-engine:5.8.2 (1 constraints: 0c0edf3b)
