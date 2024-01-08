@@ -30,7 +30,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 class DockerProxyExtensionJdk21Test {
     @RegisterExtension
     static final DockerComposeExtension DOCKER_COMPOSE_EXTENSION = DockerComposeExtension.builder()
-            .file("src/integrationTest/resources/DockerProxyExtensionTest-services.yml")
+            .file("src/integrationTest/resources/DockerProxyExtensionJdk21Test-services.yml")
             .saveLogsTo(LogDirectory.circleAwareLogDirectory(DockerProxyExtensionJdk21Test.class))
             .waitingForService("webserver", Container::areAllPortsOpen)
             .build();
