@@ -10,7 +10,7 @@ build.dependsOn integrationTest
 dependencies {
     api project(':docker-proxy-rule-core')
 
-    compileOnly group: 'com.google.auto.service', name: 'auto-service'
+    compileOnly group: 'com.google.auto.service', name: 'auto-service-annotations'
     annotationProcessor group: 'com.google.auto.service', name: 'auto-service'
 
     integrationTestImplementation project(':docker-proxy-junit-jupiter')
