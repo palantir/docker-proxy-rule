@@ -1,12 +1,24 @@
 apply plugin: 'com.palantir.external-publish-jar'
+apply plugin: 'org.unbroken-dome.test-sets'
+
+testSets {
+    integrationTest
+}
+
+build.dependsOn integrationTest
 
 dependencies {
     api project(':docker-proxy-rule-core')
 
-    testImplementation group: 'junit', name: 'junit'
-    testImplementation group: 'org.assertj', name: 'assertj-core'
-    testImplementation group: 'org.mockito', name: 'mockito-core'
-    testRuntimeOnly group: 'org.mockito', name: 'mockito-inline'
+    compileOnly group: 'com.google.auto.service', name: 'auto-service-annotations'
+    annotationProcessor group: 'com.google.auto.service', name: 'auto-service'
+
+    integrationTestImplementation project(':docker-proxy-junit-jupiter')
+    integrationTestImplementation group: 'com.palantir.docker.compose', name: 'docker-compose-junit-jupiter'
+
+    integrationTestImplementation group: 'junit', name: 'junit'
+    integrationTestImplementation group: 'org.assertj', name: 'assertj-core'
+    integrationTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter'
 }
 
 javaVersion {

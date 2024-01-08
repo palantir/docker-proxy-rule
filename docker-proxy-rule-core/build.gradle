@@ -4,6 +4,8 @@ dependencies {
     api group: 'com.palantir.docker.compose', name: 'docker-compose-rule-core'
     implementation group: 'one.util', name: 'streamex'
 
+    runtimeOnly project(":docker-proxy-rule-core-jdk21")
+
     testImplementation group: 'junit', name: 'junit'
     testImplementation group: 'org.assertj', name: 'assertj-core'
     testImplementation group: 'org.mockito', name: 'mockito-core'

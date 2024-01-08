@@ -11,6 +11,7 @@ com.fasterxml.jackson.datatype:jackson-datatype-joda:2.12.3 (1 constraints: 7e1c
 com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.3 (1 constraints: 7e1c99a4)
 com.fasterxml.jackson.module:jackson-module-afterburner:2.12.3 (1 constraints: 7e1c99a4)
 com.github.zafarkhaja:java-semver:0.9.0 (1 constraints: c315c0d2)
+com.google.auto.service:auto-service-annotations:1.1.1 (1 constraints: 0505f435)
 com.google.code.findbugs:jsr305:3.0.2 (1 constraints: 980fcc86)
 com.google.errorprone:error_prone_annotations:2.7.1 (2 constraints: f5201957)
 com.google.guava:guava:21.0 (2 constraints: cc2bc2d1)
