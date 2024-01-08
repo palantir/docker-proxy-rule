@@ -19,16 +19,16 @@ package com.palantir.docker.proxy;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.net.spi.InetAddressResolver;
-import java.util.function.Supplier;
+import java.util.function.BooleanSupplier;
 import java.util.stream.Stream;
 
 class ForwardingInetAddressResolver implements InetAddressResolver {
     private final InetAddressResolver delegate;
     private final InetAddressResolver fallback;
-    private final Supplier<Boolean> delegateEnabled;
+    private final BooleanSupplier delegateEnabled;
 
     ForwardingInetAddressResolver(
-            InetAddressResolver delegate, InetAddressResolver fallback, Supplier<Boolean> delegateEnabled) {
+            InetAddressResolver delegate, InetAddressResolver fallback, BooleanSupplier delegateEnabled) {
         this.delegate = delegate;
         this.fallback = fallback;
         this.delegateEnabled = delegateEnabled;
@@ -36,7 +36,7 @@ class ForwardingInetAddressResolver implements InetAddressResolver {
 
     @Override
     public Stream<InetAddress> lookupByName(String host, LookupPolicy lookupPolicy) throws UnknownHostException {
-        if (!delegateEnabled.get()) {
+        if (!delegateEnabled.getAsBoolean()) {
             return fallback.lookupByName(host, lookupPolicy);
         }
 
@@ -52,7 +52,7 @@ class ForwardingInetAddressResolver implements InetAddressResolver {
 
     @Override
     public String lookupByAddress(byte[] addr) throws UnknownHostException {
-        if (!delegateEnabled.get()) {
+        if (!delegateEnabled.getAsBoolean()) {
             return fallback.lookupByAddress(addr);
         }
 
