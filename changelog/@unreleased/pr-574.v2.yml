@@ -1,0 +1,5 @@
+type: improvement
+improvement:
+  description: InetAddressResolver works compiled against jdk21
+  links:
+  - https://github.com/palantir/docker-proxy-rule/pull/574

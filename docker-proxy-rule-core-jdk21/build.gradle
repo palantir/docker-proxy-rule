@@ -1,0 +1,19 @@
+apply plugin: 'com.palantir.external-publish-jar'
+
+dependencies {
+    api project(':docker-proxy-rule-core')
+
+    testImplementation group: 'junit', name: 'junit'
+    testImplementation group: 'org.assertj', name: 'assertj-core'
+    testImplementation group: 'org.mockito', name: 'mockito-core'
+    testRuntimeOnly group: 'org.mockito', name: 'mockito-inline'
+}
+
+javaVersion {
+    target = 21
+    runtime = 21
+}
+
+moduleJvmArgs {
+    opens 'java.base/java.net'
+}

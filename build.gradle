@@ -22,7 +22,7 @@ apply plugin: 'com.palantir.baseline'
 apply plugin: 'com.palantir.baseline-java-versions'
 
 javaVersions {
-    libraryTarget = 8
+    libraryTarget = 11
     runtime = 17
 }
 

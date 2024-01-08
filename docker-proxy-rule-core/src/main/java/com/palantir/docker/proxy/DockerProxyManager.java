@@ -39,6 +39,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import javax.annotation.Nullable;
 
 @SuppressWarnings("PreferSafeLoggableExceptions")
 abstract class DockerProxyManager<SelfT extends DockerComposeManager.BuilderExtensions<SelfT>> {
@@ -47,6 +48,9 @@ abstract class DockerProxyManager<SelfT extends DockerComposeManager.BuilderExte
 
     private ProxySelector originalProxySelector;
     private Object originalNameService;
+
+    @Nullable
+    private static DockerNameService dockerNameService;
 
     /**
      * Creates a {@link DockerProxyManager} which will create a proxy and DNS so that
@@ -115,22 +119,31 @@ abstract class DockerProxyManager<SelfT extends DockerComposeManager.BuilderExte
     }
 
     private void setNameService(DockerNameService nameService) {
-        String version = System.getProperty("java.version");
-        if (version.startsWith("1.")) {
+        int featureVersion = Runtime.version().feature();
+        if (featureVersion < 9) {
             getJava8NameServices().add(0, wrapNameService("sun.net.spi.nameservice.NameService", nameService, null));
-        } else {
+        } else if (featureVersion < 21) {
             originalNameService = getJava9NameService();
             setJava9NameService(wrapNameService("java.net.InetAddress$NameService", nameService, originalNameService));
+        } else {
+            dockerNameService = nameService;
         }
     }
 
     private void unsetNameService() {
-        String version = System.getProperty("java.version");
-        if (version.startsWith("1.")) {
+        int featureVersion = Runtime.version().feature();
+        if (featureVersion < 9) {
             getJava8NameServices().remove(0);
-        } else {
+        } else if (featureVersion < 21) {
             setJava9NameService(originalNameService);
+        } else {
+            dockerNameService = null;
         }
+    }
+
+    @Nullable
+    public static DockerNameService getDockerNameService() {
+        return dockerNameService;
     }
 
     @SuppressWarnings("unchecked")
