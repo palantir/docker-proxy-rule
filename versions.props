@@ -1,10 +1,10 @@
 com.fasterxml.jackson.core:jackson-databind = 2.15.3
 com.google.auto.service:* = 1.1.1
-com.palantir.docker.compose:* = 1.8.0
+com.palantir.docker.compose:* = 2.3.0
 junit:junit = 4.13.2
-one.util:streamex = 0.8.1
-org.assertj:assertj-core = 3.22.0
-org.junit.jupiter:* = 5.8.2
-org.mockito:* = 4.4.0
+one.util:streamex = 0.8.2
+org.assertj:assertj-core = 3.25.3
+org.junit.jupiter:* = 5.10.2
+org.mockito:* = 5.11.0
 org.hamcrest:* = 2.1
-net.bytebuddy:* = 1.14.11
+net.bytebuddy:* = 1.14.12
