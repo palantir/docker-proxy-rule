@@ -29,3 +29,6 @@ generated_testSrc/
 bin/
 build/
 out/
+
+# Gradle JDKs setup
+!gradle/*
