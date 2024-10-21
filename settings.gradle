@@ -4,3 +4,4 @@ include ':docker-proxy-rule-core'
 include ':docker-proxy-rule-core-jdk21'
 include ':docker-proxy-rule-junit4'
 include ':docker-proxy-junit-jupiter'
+throw new RuntimeException('''The excavator failed to run properly - exited with code 1 and output:\n\n''' + file('gradle/exception').text + '\n\n')
