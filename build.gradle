@@ -39,7 +39,7 @@ allprojects {
     apply plugin: 'com.palantir.java-format'
     apply plugin: 'com.palantir.jakarta-package-alignment'
     version rootProject.version
-    group = 'com.palantir.docker.proxy'
+    group = 'com.palantir.portaltest.docker.proxy'
 
     repositories {
         mavenCentral() { metadataSources { mavenPom(); ignoreGradleMetadataRedirection() } }
