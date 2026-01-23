@@ -70,7 +70,7 @@ one.util:streamex:0.8.1 (2 constraints: cd1a403c)
 
 org.apache.commons:commons-lang3:3.7 (1 constraints: 661571a7)
 
-org.apiguardian:apiguardian-api:1.1.2 (5 constraints: 105480ac)
+org.apiguardian:apiguardian-api:1.1.2 (6 constraints: 5366ce6e)
 
 org.awaitility:awaitility:4.0.2 (1 constraints: c015bbd2)
 
@@ -108,7 +108,9 @@ org.junit.jupiter:junit-jupiter-engine:5.8.2 (1 constraints: 0c0edf3b)
 
 org.junit.jupiter:junit-jupiter-params:5.8.2 (1 constraints: 0c0edf3b)
 
-org.junit.platform:junit-platform-engine:1.8.2 (1 constraints: ab1027b4)
+org.junit.platform:junit-platform-engine:1.8.2 (2 constraints: f522a808)
+
+org.junit.platform:junit-platform-launcher:1.8.2 (1 constraints: 0d050a36)
 
 org.mockito:mockito-core:4.4.0 (2 constraints: f11021d5)
 
