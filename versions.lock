@@ -2,25 +2,25 @@
 
 com.fasterxml.jackson.core:jackson-annotations:2.21 (7 constraints: ab76c645)
 
-com.fasterxml.jackson.core:jackson-core:2.21.0 (9 constraints: e4ca9d86)
+com.fasterxml.jackson.core:jackson-core:2.21.1 (9 constraints: edcaa28f)
 
-com.fasterxml.jackson.core:jackson-databind:2.21.0 (12 constraints: b602f068)
+com.fasterxml.jackson.core:jackson-databind:2.21.1 (12 constraints: be028976)
 
-com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.21.0 (1 constraints: 7e1c99a4)
+com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.21.1 (1 constraints: 7e1c99a4)
 
-com.fasterxml.jackson.dataformat:jackson-dataformat-smile:2.21.0 (1 constraints: 7e1c99a4)
+com.fasterxml.jackson.dataformat:jackson-dataformat-smile:2.21.1 (1 constraints: 7e1c99a4)
 
-com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.21.0 (1 constraints: f415b2e8)
+com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.21.1 (1 constraints: f415b2e8)
 
-com.fasterxml.jackson.datatype:jackson-datatype-guava:2.21.0 (1 constraints: 7e1c99a4)
+com.fasterxml.jackson.datatype:jackson-datatype-guava:2.21.1 (1 constraints: 7e1c99a4)
 
-com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.21.0 (1 constraints: 7e1c99a4)
+com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.21.1 (1 constraints: 7e1c99a4)
 
-com.fasterxml.jackson.datatype:jackson-datatype-joda:2.21.0 (1 constraints: 7e1c99a4)
+com.fasterxml.jackson.datatype:jackson-datatype-joda:2.21.1 (1 constraints: 7e1c99a4)
 
-com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.21.0 (1 constraints: 7e1c99a4)
+com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.21.1 (1 constraints: 7e1c99a4)
 
-com.fasterxml.jackson.module:jackson-module-afterburner:2.21.0 (1 constraints: 7e1c99a4)
+com.fasterxml.jackson.module:jackson-module-afterburner:2.21.1 (1 constraints: 7e1c99a4)
 
 com.github.zafarkhaja:java-semver:0.9.0 (1 constraints: c315c0d2)
 
@@ -90,7 +90,7 @@ org.opentest4j:opentest4j:1.2.0 (2 constraints: cd205b49)
 
 org.slf4j:slf4j-api:1.7.36 (2 constraints: 042493b3)
 
-org.yaml:snakeyaml:2.4 (1 constraints: 3e178d10)
+org.yaml:snakeyaml:2.5 (1 constraints: 3f178e10)
 
 
 
