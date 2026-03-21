@@ -66,7 +66,7 @@ joda-time:joda-time:2.12.7 (2 constraints: 232ce739)
 
 junit:junit:4.13.2 (2 constraints: 841bfe6b)
 
-one.util:streamex:0.8.1 (2 constraints: cd1a403c)
+one.util:streamex:0.8.4 (2 constraints: d01afa3c)
 
 org.apache.commons:commons-lang3:3.7 (1 constraints: 661571a7)
 
