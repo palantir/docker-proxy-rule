@@ -8,4 +8,4 @@ org.assertj:assertj-core = 3.27.7
 org.junit.jupiter:* = 5.8.2
 org.mockito:* = 4.4.0
 org.hamcrest:* = 2.1
-net.bytebuddy:* = 1.14.11
+net.bytebuddy:* = 1.18.7
