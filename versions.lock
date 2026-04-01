@@ -96,9 +96,9 @@ org.yaml:snakeyaml:2.5 (1 constraints: 3f178e10)
 
 [Test dependencies]
 
-net.bytebuddy:byte-buddy:1.18.7 (2 constraints: 9816a63e)
+net.bytebuddy:byte-buddy:1.18.8 (2 constraints: 9816a63e)
 
-net.bytebuddy:byte-buddy-agent:1.18.7 (1 constraints: 460b40de)
+net.bytebuddy:byte-buddy-agent:1.18.8 (1 constraints: 460b40de)
 
 org.assertj:assertj-core:3.27.7 (1 constraints: 4505553b)
 
