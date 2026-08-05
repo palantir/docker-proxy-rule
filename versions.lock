@@ -1,26 +1,26 @@
 # Run ./gradlew writeVersionsLocks to regenerate this file. Blank lines are to minimize merge conflicts.
 
-com.fasterxml.jackson.core:jackson-annotations:2.21 (7 constraints: ab76c645)
+com.fasterxml.jackson.core:jackson-annotations:2.22 (7 constraints: b076d249)
 
-com.fasterxml.jackson.core:jackson-core:2.21.4 (9 constraints: 08cbb1aa)
+com.fasterxml.jackson.core:jackson-core:2.22.1 (9 constraints: f6cab998)
 
-com.fasterxml.jackson.core:jackson-databind:2.21.4 (12 constraints: d602549f)
+com.fasterxml.jackson.core:jackson-databind:2.22.1 (12 constraints: c6023284)
 
-com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.21.4 (1 constraints: 7e1c99a4)
+com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.22.1 (1 constraints: 7e1c99a4)
 
-com.fasterxml.jackson.dataformat:jackson-dataformat-smile:2.21.4 (1 constraints: 7e1c99a4)
+com.fasterxml.jackson.dataformat:jackson-dataformat-smile:2.22.1 (1 constraints: 7e1c99a4)
 
-com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.21.4 (1 constraints: f415b2e8)
+com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.22.1 (1 constraints: f415b2e8)
 
-com.fasterxml.jackson.datatype:jackson-datatype-guava:2.21.4 (1 constraints: 7e1c99a4)
+com.fasterxml.jackson.datatype:jackson-datatype-guava:2.22.1 (1 constraints: 7e1c99a4)
 
-com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.21.4 (1 constraints: 7e1c99a4)
+com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.22.1 (1 constraints: 7e1c99a4)
 
-com.fasterxml.jackson.datatype:jackson-datatype-joda:2.21.4 (1 constraints: 7e1c99a4)
+com.fasterxml.jackson.datatype:jackson-datatype-joda:2.22.1 (1 constraints: 7e1c99a4)
 
-com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.21.4 (1 constraints: 7e1c99a4)
+com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.22.1 (1 constraints: 7e1c99a4)
 
-com.fasterxml.jackson.module:jackson-module-afterburner:2.21.4 (1 constraints: 7e1c99a4)
+com.fasterxml.jackson.module:jackson-module-afterburner:2.22.1 (1 constraints: 7e1c99a4)
 
 com.github.zafarkhaja:java-semver:0.9.0 (1 constraints: c315c0d2)
 
