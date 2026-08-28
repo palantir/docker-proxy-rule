@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Proxy Rule - Test Server</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .status {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .endpoints {
+            margin: 20px 0;
+        }
+        .endpoint {
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+        }
+        code {
+            background-color: #e9ecef;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐳 Docker Proxy Rule Test Server</h1>
+        
+        <div class="status">
+            ✅ Test server is running successfully.
+        </div>
+
+        <h2>Available Endpoints</h2>
+        <div class="endpoints">
+            <div class="endpoint">
+                <strong>GET /health</strong><br>
+                Health check endpoint - Check server status
+            </div>
+            <div class="endpoint">
+                <strong>GET /api/</strong><br>
+                API test endpoint - Returns JSON response
+            </div>
+        </div>
+
+        <h2>Proxy Testing</h2>
+        <p>This server is designed for testing the Docker Proxy Rule library.</p>
+        <p>Proxy port: <code>1080</code></p>
+        <p>Web server port: <code>8081</code></p>
+
+        <h2>Monitoring</h2>
+        <ul>
+            <li><a href="http://localhost:9090" target="_blank">Prometheus</a> - Metrics collection</li>
+            <li><a href="http://localhost:3000" target="_blank">Grafana</a> - Dashboard (admin/admin)</li>
+        </ul>
+    </div>
+</body>
+</html>
