@@ -1,6 +1,0 @@
-type: fix
-fix:
-  description: Update dependencies so docker compose v2 is used by default, and remove
-    old unused scripts.
-  links:
-  - https://github.com/palantir/docker-proxy-rule/pull/607
