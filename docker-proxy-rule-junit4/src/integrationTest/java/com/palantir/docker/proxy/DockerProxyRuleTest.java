@@ -22,8 +22,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("for-rollout:JUnit5RuleUsage")
 public class DockerProxyRuleTest {
     @ClassRule
     public static final DockerComposeRule DOCKER_COMPOSE_RULE = DockerComposeRule.builder()
@@ -125,9 +127,11 @@ public class DockerProxyRuleTest {
         }
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void runningProxyRuleBeforeDockerComposeRuleFails() throws IOException, InterruptedException {
-        DockerProxyRule.fromNetworkName("doesnotexist", DockerProxyRuleTest.class)
-                .before();
+        Assertions.assertThrows(IllegalStateException.class, () -> {
+            DockerProxyRule.fromNetworkName("doesnotexist", DockerProxyRuleTest.class)
+                    .before();
+        });
     }
 }
