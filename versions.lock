@@ -82,11 +82,13 @@ org.hamcrest:hamcrest:3.0 (3 constraints: 3d2cbd31)
 
 org.hamcrest:hamcrest-core:3.0 (1 constraints: cc05fe3f)
 
-org.junit.jupiter:junit-jupiter-api:5.8.2 (4 constraints: 0547af6b)
+org.jspecify:jspecify:1.0.0 (5 constraints: 0154b2a6)
 
-org.junit.platform:junit-platform-commons:1.8.2 (2 constraints: dd200b4b)
+org.junit.jupiter:junit-jupiter-api:6.1.3 (4 constraints: f646c168)
 
-org.opentest4j:opentest4j:1.2.0 (2 constraints: cd205b49)
+org.junit.platform:junit-platform-commons:6.1.3 (2 constraints: db20e44a)
+
+org.opentest4j:opentest4j:1.3.0 (2 constraints: cf209249)
 
 org.slf4j:slf4j-api:1.7.36 (2 constraints: 042493b3)
 
@@ -102,13 +104,13 @@ net.bytebuddy:byte-buddy-agent:1.18.13 (1 constraints: 460b40de)
 
 org.assertj:assertj-core:3.27.7 (1 constraints: 4505553b)
 
-org.junit.jupiter:junit-jupiter:5.8.2 (1 constraints: 11051e36)
+org.junit.jupiter:junit-jupiter:6.1.3 (1 constraints: 0c050f36)
 
-org.junit.jupiter:junit-jupiter-engine:5.8.2 (1 constraints: 0c0edf3b)
+org.junit.jupiter:junit-jupiter-engine:6.1.3 (1 constraints: 070ed03b)
 
-org.junit.jupiter:junit-jupiter-params:5.8.2 (1 constraints: 0c0edf3b)
+org.junit.jupiter:junit-jupiter-params:6.1.3 (1 constraints: 070ed03b)
 
-org.junit.platform:junit-platform-engine:1.8.2 (1 constraints: ab1027b4)
+org.junit.platform:junit-platform-engine:6.1.3 (1 constraints: aa102cb4)
 
 org.mockito:mockito-core:4.4.0 (2 constraints: f11021d5)
 
