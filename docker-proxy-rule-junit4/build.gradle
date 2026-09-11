@@ -15,3 +15,7 @@ dependencies {
     testImplementation group: 'org.assertj', name: 'assertj-core'
     testImplementation group: 'org.mockito', name: 'mockito-core'
 }
+
+tasks.named('integrationTest') {
+    useJUnit()
+}

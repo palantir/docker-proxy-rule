@@ -15,3 +15,7 @@ dependencies {
 moduleJvmArgs {
     opens 'java.base/java.net'
 }
+
+testing.suites.named('test') {
+    useJUnit()
+}
