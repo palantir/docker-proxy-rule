@@ -25,7 +25,8 @@ import com.google.common.net.InetAddresses;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Optional;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class DockerNameServiceTest {
     private static final String HOST_NAME = "host";
@@ -63,11 +64,13 @@ public class DockerNameServiceTest {
         verify(containerInfo, times(2)).getIpForHost(HOST_NAME);
     }
 
-    @Test(expected = UnknownHostException.class)
+    @Test
     public void shouldThrowUnknownHostExceptionWhenNoIpForHost() throws UnknownHostException {
-        when(containerInfo.getIpForHost(HOST_NAME)).thenReturn(Optional.empty());
+        Assertions.assertThrows(UnknownHostException.class, () -> {
+            when(containerInfo.getIpForHost(HOST_NAME)).thenReturn(Optional.empty());
 
-        dockerNameService.lookupAllHostAddr(HOST_NAME);
+            dockerNameService.lookupAllHostAddr(HOST_NAME);
+        });
     }
 
     @Test
@@ -98,10 +101,12 @@ public class DockerNameServiceTest {
         verify(containerInfo, times(2)).getHostForIp(HOST_IP);
     }
 
-    @Test(expected = UnknownHostException.class)
+    @Test
     public void shouldThrowUnknownHostExceptionWhenNoHostForIp() throws UnknownHostException {
-        when(containerInfo.getHostForIp(HOST_IP)).thenReturn(Optional.empty());
+        Assertions.assertThrows(UnknownHostException.class, () -> {
+            when(containerInfo.getHostForIp(HOST_IP)).thenReturn(Optional.empty());
 
-        dockerNameService.getHostByAddr(HOST_IP_INET.getAddress());
+            dockerNameService.getHostByAddr(HOST_IP_INET.getAddress());
+        });
     }
 }
