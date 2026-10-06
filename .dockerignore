@@ -1,0 +1,63 @@
+# Git related files
+# .git
+.gitignore
+.gitattributes
+
+# IDE related files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Build artifacts (exclude from build context)
+build/
+.gradle/
+out/
+
+# Log files
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+*~
+.DS_Store
+Thumbs.db
+
+# Test related
+test-results/
+test-output/
+
+# Docker related
+docker-compose.override.yml
+.dockerignore
+Dockerfile*
+
+# CI/CD related
+.circleci/
+.github/
+
+# Documentation and configuration files
+README.md
+LICENSE
+*.md
+changelog/
+
+# Monitoring configuration (mounted at runtime)
+monitoring/
+
+# Test data (mounted at runtime)
+test-data/
+
+# Environment configuration files
+.env
+.env.local
+.env.*.local
+
+# Package manager cache
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
