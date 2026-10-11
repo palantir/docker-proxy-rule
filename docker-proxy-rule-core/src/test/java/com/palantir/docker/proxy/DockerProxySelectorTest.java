@@ -134,6 +134,7 @@ public class DockerProxySelectorTest {
                 .build();
     }
 
+    @SuppressWarnings("for-rollout:deprecation")
     private static URI createUriUnsafe(String uriString) {
         try {
             return new URI(uriString);

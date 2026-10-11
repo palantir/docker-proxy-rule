@@ -103,6 +103,7 @@ abstract class DockerProxyManager<SelfT extends DockerComposeManager.BuilderExte
         dockerComposeRule.after();
     }
 
+    @SuppressWarnings("for-rollout:deprecation")
     private static File getDockerComposeFile(String networkName, String imageName) {
         try {
             File proxyFile = File.createTempFile("proxy", ".yml");
