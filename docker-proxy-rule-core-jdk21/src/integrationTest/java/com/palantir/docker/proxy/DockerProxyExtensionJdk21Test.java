@@ -128,8 +128,9 @@ class DockerProxyExtensionJdk21Test {
 
     @Test
     void runningProxyRuleBeforeDockerComposeRuleFails() {
-        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> DockerProxyExtension.fromNetworkName(
-                        "doesnotexist", DockerProxyExtensionJdk21Test.class)
-                .before());
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(
+                        () -> DockerProxyExtension.fromNetworkName("doesnotexist", DockerProxyExtensionJdk21Test.class)
+                                .before());
     }
 }
