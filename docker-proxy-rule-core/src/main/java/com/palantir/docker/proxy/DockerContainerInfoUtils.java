@@ -50,6 +50,7 @@ public final class DockerContainerInfoUtils {
         // Utility class
     }
 
+    @SuppressWarnings("for-rollout:deprecation")
     public static List<String> getAllNamesForContainerId(DockerExecutable docker, String containerId) {
         try {
             String labelsFormat = StreamEx.of(DOCKER_NAME_LABELS)
