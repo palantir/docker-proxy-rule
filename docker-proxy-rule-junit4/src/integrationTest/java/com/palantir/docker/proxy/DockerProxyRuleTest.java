@@ -25,6 +25,7 @@ import org.junit.ClassRule;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("for-rollout:JUnit5RuleUsage")
 public class DockerProxyRuleTest {
     @ClassRule
     public static final DockerComposeRule DOCKER_COMPOSE_RULE = DockerComposeRule.builder()
