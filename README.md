@@ -13,6 +13,34 @@ This is a small library for executing JUnit tests that interact with Docker cont
  - Auto-mapping the hostnames when using docker-compose-rule
  - Auto-mapping the hostnames when specifying the name of the network they are on
 
+## 🐳 Containerization Support
+
+This project now includes full containerization support with Docker and Docker Compose for development, testing, and production environments.
+
+### Quick Start with Docker
+
+```bash
+# Build the Docker image
+docker build -t palantir/docker-proxy-rule .
+
+# Run with Docker Compose (includes monitoring stack)
+docker-compose up -d
+
+# Access services
+# - Proxy: localhost:1080
+# - Test Web Server: localhost:8081
+# - Prometheus: localhost:9090
+# - Grafana: localhost:3000 (admin/admin)
+```
+
+### Development Environment
+
+The Docker Compose setup includes:
+- **Main Application**: Docker Proxy Rule with SOCKS proxy on port 1080
+- **Test Services**: Nginx web server, PostgreSQL database, Redis cache
+- **Monitoring Stack**: Prometheus metrics collection and Grafana dashboards
+- **Health Checks**: Automated health monitoring for all services
+
 Why should I use this
 ---------------------
 
@@ -50,3 +78,92 @@ You can then communicate with the hosts within your tests. For example:
 URLConnection urlConnection = new URL(TARGET).openConnection();
 urlConnection.connect();
 ```
+
+## 🚀 Container Features
+
+### Multi-stage Build
+- **Build Stage**: Uses Gradle with JDK 17 for compilation
+- **Runtime Stage**: Uses Google Distroless for minimal attack surface
+- **Optimization**: Layered caching for faster builds
+
+### Security Features
+- **Non-root User**: Runs as `nonroot:nonroot` user
+- **Distroless Base**: Minimal runtime environment
+- **Security Scanning**: Ready for vulnerability scanning tools
+
+### Monitoring & Observability
+- **Prometheus Metrics**: Application and JVM metrics
+- **Grafana Dashboards**: Pre-configured monitoring dashboards
+- **Health Checks**: Kubernetes-ready health endpoints
+- **Structured Logging**: JSON-formatted logs for centralized logging
+
+## 📁 Project Structure
+
+```
+├── Dockerfile                 # Multi-stage container build
+├── docker-compose.yml         # Complete development stack
+├── .dockerignore              # Docker build optimization
+├── monitoring/                # Monitoring configuration
+│   ├── prometheus.yml         # Metrics collection config
+│   └── grafana/              # Dashboard configuration
+└── test-data/                # Test environment setup
+    ├── nginx.conf            # Test web server config
+    ├── init.sql              # Database initialization
+    └── html/                 # Test web content
+```
+
+## 🛠️ Development
+
+### Prerequisites
+- Docker and Docker Compose
+- Java 17+ (for local development)
+- Gradle 8+ (for local builds)
+
+### Local Development
+```bash
+# Clone the repository
+git clone https://github.com/palantir/docker-proxy-rule.git
+cd docker-proxy-rule
+
+# Create feature branch
+git checkout -b feature/your-feature-name
+
+# Start development environment
+docker-compose up -d
+
+# Run tests
+./gradlew test
+
+# Build application
+./gradlew build
+```
+
+### Testing the Proxy
+```bash
+# Test SOCKS proxy connection
+curl --socks5 localhost:1080 http://test-web-server/health
+
+# Check application health
+curl http://localhost:8080/health
+
+# View metrics
+curl http://localhost:8080/actuator/prometheus
+```
+
+## 📊 Monitoring
+
+Access the monitoring stack:
+- **Prometheus**: http://localhost:9090 - Metrics collection and querying
+- **Grafana**: http://localhost:3000 - Dashboards and visualization (admin/admin)
+
+## 🤝 Contributing
+
+1. Create a feature branch from `develop`
+2. Make your changes with appropriate tests
+3. Ensure all containers build and run successfully
+4. Update documentation as needed
+5. Submit a pull request
+
+## 📝 License
+
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
