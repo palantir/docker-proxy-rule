@@ -38,8 +38,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DockerProxySelectorTest {
     private static final String CLUSTER_IP = "172.17.0.1";
@@ -57,7 +58,7 @@ public class DockerProxySelectorTest {
     private final ProxySelector dockerProxySelector =
             new DockerProxySelector(setupProxyContainer(), containerInfo, originalProxySelector);
 
-    @Before
+    @BeforeEach
     public void originalProxySelectorIsNoProxy() {
         when(originalProxySelector.select(any())).thenReturn(ImmutableList.of(Proxy.NO_PROXY));
     }
@@ -92,19 +93,25 @@ public class DockerProxySelectorTest {
         assertThat(selectedProxy).containsExactly(new Proxy(Proxy.Type.SOCKS, PROXY_ADDRESS));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void connectionFailedShouldThrowOnNullUri() {
-        dockerProxySelector.connectFailed(null, PROXY_ADDRESS, new IOException());
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            dockerProxySelector.connectFailed(null, PROXY_ADDRESS, new IOException());
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void connectionFailedShouldThrowOnNullAddress() {
-        dockerProxySelector.connectFailed(TEST_HOSTNAME_URI, null, new IOException());
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            dockerProxySelector.connectFailed(TEST_HOSTNAME_URI, null, new IOException());
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void connectionFailedShouldThrowOnNullException() {
-        dockerProxySelector.connectFailed(TEST_HOSTNAME_URI, PROXY_ADDRESS, null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            dockerProxySelector.connectFailed(TEST_HOSTNAME_URI, PROXY_ADDRESS, null);
+        });
     }
 
     @Test
